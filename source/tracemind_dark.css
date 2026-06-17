@@ -1,0 +1,477 @@
+/* ============================================================
+   TraceMind — Dark Theme
+   Palette:
+     --bg-base:    #0a0e1a   (deepest background)
+     --bg-surface: #111827   (cards, sidebar)
+     --bg-raised:  #1a2236   (elevated panels, input)
+     --border:     #1e2d45   (subtle dividers)
+     --accent:     #38bdf8   (sky blue — primary CTA / highlights)
+     --accent-dim: #0ea5e9   (hover states)
+     --teal:       #2dd4bf   (secondary accent, KG graph)
+     --green:      #22c55e   (HOME_MANAGEMENT)
+     --amber:      #f59e0b   (URGENT_SAME_DAY)
+     --red:        #ef4444   (ER_NOW)
+     --muted:      #94a3b8   (captions, helper text)
+     --text:       #e2e8f0   (body)
+     --text-strong:#f8fafc   (headings)
+   Typefaces:
+     Display  — 'Inter' 700 (pulled from Google Fonts via @import)
+     Body     — 'Inter' 400
+     Mono     — 'JetBrains Mono' (rule IDs, code blocks)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ── Base canvas ─────────────────────────────────────────── */
+html, body, [data-testid="stAppViewContainer"],
+[data-testid="stApp"] {
+    background-color: #0a0e1a !important;
+    color: #e2e8f0 !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+[data-testid="stMain"], .main, .block-container {
+    background-color: #0a0e1a !important;
+    padding-top: 1.5rem !important;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background-color: #111827 !important;
+    border-right: 1px solid #1e2d45 !important;
+}
+
+[data-testid="stSidebar"] * {
+    color: #e2e8f0 !important;
+}
+
+[data-testid="stSidebar"] hr {
+    border-color: #1e2d45 !important;
+}
+
+/* Sidebar section headers */
+[data-testid="stSidebar"] h3 {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: #38bdf8 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+/* ── App header area ─────────────────────────────────────── */
+.tm-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.tm-header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+
+.tm-header .tm-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px #38bdf8aa);
+}
+
+.tm-tagline {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding-left: 0.25rem;
+}
+
+.tm-subtitle {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-bottom: 0;
+}
+
+/* ── Section headings ────────────────────────────────────── */
+.tm-section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin: 0 0 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tm-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, #1e2d45, transparent);
+    margin-left: 0.5rem;
+}
+
+/* ── Sidebar scenario buttons ────────────────────────────── */
+[data-testid="stSidebar"] .stButton > button {
+    background-color: #1a2236 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #1e2d45 !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0.75rem !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    background-color: #1e2d45 !important;
+    border-color: #38bdf8 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 0 12px #38bdf822 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Scenario-specific button accent on hover */
+.btn-home:hover { border-color: #22c55e !important; color: #22c55e !important; }
+.btn-urgent:hover { border-color: #f59e0b !important; color: #f59e0b !important; }
+.btn-er:hover { border-color: #ef4444 !important; color: #ef4444 !important; }
+
+/* Reset button */
+[data-testid="stSidebar"] .stButton > button[kind="secondary"],
+.btn-reset > button {
+    background-color: transparent !important;
+    border-color: #1e2d45 !important;
+    color: #64748b !important;
+    font-size: 0.78rem !important;
+}
+
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover,
+.btn-reset > button:hover {
+    border-color: #64748b !important;
+    color: #94a3b8 !important;
+}
+
+/* ── Chat messages ───────────────────────────────────────── */
+[data-testid="stChatMessage"] {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* User bubble */
+[data-testid="stChatMessage"][data-testid*="user"],
+.stChatMessage:has([data-testid="chatAvatarIcon-user"]) {
+    background-color: #0c2340 !important;
+    border: 1px solid #1e3a5f !important;
+    border-radius: 0.75rem !important;
+    padding: 0.875rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Assistant bubble */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+    background-color: #111827 !important;
+    border: 1px solid #1e2d45 !important;
+    border-left: 3px solid #38bdf8 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.875rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Avatar icons */
+[data-testid="chatAvatarIcon-user"] {
+    background: linear-gradient(135deg, #0369a1, #0ea5e9) !important;
+    border-radius: 50% !important;
+}
+
+[data-testid="chatAvatarIcon-assistant"] {
+    background: linear-gradient(135deg, #0f766e, #2dd4bf) !important;
+    border-radius: 50% !important;
+}
+
+/* ── Chat input ──────────────────────────────────────────── */
+[data-testid="stChatInput"] {
+    background-color: #111827 !important;
+    border: 1px solid #1e2d45 !important;
+    border-radius: 0.875rem !important;
+    box-shadow: 0 0 0 1px #1e2d45, 0 4px 24px #00000055 !important;
+}
+
+[data-testid="stChatInput"]:focus-within {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 3px #38bdf820, 0 4px 24px #00000055 !important;
+}
+
+[data-testid="stChatInput"] textarea {
+    background-color: transparent !important;
+    color: #e2e8f0 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.92rem !important;
+    caret-color: #38bdf8 !important;
+}
+
+[data-testid="stChatInput"] textarea::placeholder {
+    color: #475569 !important;
+}
+
+[data-testid="stChatInput"] button {
+    background-color: #38bdf8 !important;
+    color: #0a0e1a !important;
+    border-radius: 0.5rem !important;
+}
+
+[data-testid="stChatInput"] button:hover {
+    background-color: #0ea5e9 !important;
+}
+
+/* ── Disposition badges ──────────────────────────────────── */
+.tm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.tm-badge-er {
+    background-color: #450a0a;
+    color: #fca5a5;
+    border: 1px solid #ef444466;
+    box-shadow: 0 0 12px #ef444422;
+}
+
+.tm-badge-urgent {
+    background-color: #451a03;
+    color: #fcd34d;
+    border: 1px solid #f59e0b66;
+    box-shadow: 0 0 12px #f59e0b22;
+}
+
+.tm-badge-home {
+    background-color: #052e16;
+    color: #86efac;
+    border: 1px solid #22c55e66;
+    box-shadow: 0 0 12px #22c55e22;
+}
+
+.tm-badge-scope {
+    background-color: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #33415566;
+}
+
+/* ── Insight panel cards ─────────────────────────────────── */
+.tm-card {
+    background-color: #111827;
+    border: 1px solid #1e2d45;
+    border-radius: 0.75rem;
+    padding: 1rem 1.125rem;
+    margin-bottom: 0.75rem;
+}
+
+.tm-rule-chip {
+    display: inline-block;
+    background-color: #0f172a;
+    color: #38bdf8;
+    border: 1px solid #1e3a5f;
+    border-radius: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.4rem;
+}
+
+.tm-med-flag {
+    background-color: #2d1515;
+    border: 1px solid #7f1d1d;
+    border-left: 3px solid #ef4444;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: #fca5a5;
+    font-size: 0.85rem;
+    margin: 0.4rem 0;
+}
+
+.tm-missing-field {
+    background-color: #1c1a08;
+    border: 1px solid #713f12;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    color: #fcd34d;
+    font-size: 0.82rem;
+    margin: 0.3rem 0;
+}
+
+.tm-kg-concept {
+    background-color: #0f1f38;
+    border: 1px solid #1e3a5f;
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.875rem;
+    margin: 0.4rem 0;
+}
+
+.tm-kg-concept strong {
+    color: #2dd4bf;
+    font-size: 0.88rem;
+}
+
+.tm-kg-concept .tm-kg-caption {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.tm-kg-ancestor {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid #1e2d45;
+    margin-top: 0.25rem;
+}
+
+/* ── Tabs override ───────────────────────────────────────── */
+[data-testid="stTabs"] [role="tablist"] {
+    background-color: #111827 !important;
+    border-bottom: 1px solid #1e2d45 !important;
+    gap: 0 !important;
+    padding: 0 !important;
+}
+
+[data-testid="stTabs"] [role="tab"] {
+    color: #64748b !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    padding: 0.5rem 0.875rem !important;
+    border-radius: 0 !important;
+    border-bottom: 2px solid transparent !important;
+    transition: all 0.15s !important;
+}
+
+[data-testid="stTabs"] [role="tab"]:hover {
+    color: #e2e8f0 !important;
+    background-color: transparent !important;
+}
+
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+    color: #38bdf8 !important;
+    border-bottom-color: #38bdf8 !important;
+    background-color: transparent !important;
+}
+
+[data-testid="stTabContent"] {
+    background-color: transparent !important;
+    padding-top: 0.75rem !important;
+}
+
+/* ── Streamlit info / warning / success boxes ────────────── */
+[data-testid="stAlert"] {
+    background-color: #111827 !important;
+    border-radius: 0.5rem !important;
+    border-left-width: 3px !important;
+    color: #e2e8f0 !important;
+}
+
+/* ── Dividers ────────────────────────────────────────────── */
+hr, [data-testid="stDivider"] {
+    border-color: #1e2d45 !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0e1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e2d45;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #38bdf8;
+}
+
+/* ── Spinner ─────────────────────────────────────────────── */
+[data-testid="stSpinner"] {
+    color: #38bdf8 !important;
+}
+
+/* ── Modal dialog ────────────────────────────────────────── */
+[data-testid="stModal"] > div,
+.stDialog > div {
+    background-color: #111827 !important;
+    border: 1px solid #1e2d45 !important;
+    border-radius: 1rem !important;
+    color: #e2e8f0 !important;
+}
+
+[data-testid="stModal"] .stTextArea textarea,
+.stDialog .stTextArea textarea {
+    background-color: #0a0e1a !important;
+    border-color: #1e2d45 !important;
+    color: #e2e8f0 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.82rem !important;
+}
+
+[data-testid="stModal"] code,
+.stDialog code {
+    background-color: #0a0e1a !important;
+    color: #2dd4bf !important;
+    border: 1px solid #1e2d45 !important;
+}
+
+/* ── About section in sidebar ────────────────────────────── */
+.tm-about-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    padding: 0.2rem 0;
+}
+
+/* ── Reasoning panel rule trace ──────────────────────────── */
+.tm-rule-block {
+    background-color: #0f172a;
+    border: 1px solid #1e2d45;
+    border-left: 3px solid #38bdf8;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+}
+
+.tm-rule-block .tm-rule-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.3rem;
+}
+
+.tm-rule-block .tm-rule-meta {
+    font-size: 0.76rem;
+    color: #64748b;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+}
