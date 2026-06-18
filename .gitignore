@@ -1,0 +1,61 @@
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+~*
+
+# Large files (PDFs, videos, etc - add as needed)
+*.pdf
+*.mp4
+*.mov
+*.zip
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+*.cache
+
+# Node (if used)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Local development
+local/
+temp/
+tmp/
+
+# Credentials and secrets
+*.key
+*.pem
+secrets.json
+credentials.json
+.env
+
