@@ -27,11 +27,16 @@ ehthumbs.db
 *.swp
 ~*
 
-# Large files (PDFs, videos, etc - add as needed)
+# Large files (PDFs, videos, images - keep on GitHub only, not synced to HF)
 *.pdf
 *.mp4
 *.mov
 *.zip
+*.jpg
+*.jpeg
+*.png
+Images/
+lifegraph-ui-preview.jpeg
 
 # Database
 *.db
