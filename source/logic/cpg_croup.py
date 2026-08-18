@@ -113,6 +113,10 @@ def _is_severe_croup(case: dict[str, Any]) -> bool:
     if case.get("alertness") == "altered":
         return True
 
+    # Severely limited speech (only single words)
+    if case.get("ability_to_speak") == "single_words":
+        return True
+
     # Drooling + stridor (may indicate epiglottitis; treat as emergency)
     if case.get("drooling") == "yes" and case.get("stridor") == "yes":
         rule_alert = "possible_epiglottitis_not_simple_croup"

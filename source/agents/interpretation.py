@@ -467,6 +467,57 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
     if _heuristic_global_intake_declined(text, out):
         out["intake_declined"] = True
 
+    # Extract condition-specific fields for croup
+    if any(x in t for x in ("barky cough", "seal bark", "seal-like", "cough like a seal", "cough sounds like a seal")):
+        out["barky_cough"] = "yes"
+    if any(x in t for x in ("stridor", "wheezing")) or any(x in t for x in ("barky", "cough")):
+        out["stridor"] = "yes"
+        if any(x in t for x in ("loud stridor", "severe stridor", "stridor even at rest", "stridor at rest")):
+            out["stridor_type"] = "biphasic"
+        elif any(x in t for x in ("inspiratory", "crying", "agitated", "with cry", "when cries")):
+            out["stridor_type"] = "inspiratory"
+
+    # Extract ability to speak (important for asthma/croup severity)
+    if any(x in t for x in ("can't talk", "cannot talk", "barely talk", "can barely talk", "only say", "only says", "single word", "one word")):
+        out["ability_to_speak"] = "single_words"
+    elif any(x in t for x in ("short phrase", "short phrases", "few words")):
+        out["ability_to_speak"] = "short_phrases"
+    elif any(x in t for x in ("full sentence", "full sentences", "talking normally", "speaking in full")):
+        out["ability_to_speak"] = "full_sentences"
+
+    # Extract condition-specific fields for asthma
+    if any(x in t for x in ("wheez", "wheezing", "wheeze")):
+        out["wheeze"] = "yes"
+    m_oxygen = re.search(r"(?:oxygen|spo2|sp\s*o\s*2|o2)\s*(?:is|:)?\s*(\d{1,3})%?\b", t)
+    if m_oxygen:
+        try:
+            out["oxygen_saturation"] = int(m_oxygen.group(1))
+        except ValueError:
+            pass
+
+    # Extract condition-specific fields for anaphylaxis
+    if any(x in t for x in ("hive", "urticaria", "rash")):
+        out["urticaria"] = "yes"
+    if any(x in t for x in ("swelling", "edema", "angioedema", "lips swelling", "face swelling", "tongue swelling", "throat swelling")):
+        out["angioedema"] = "yes"
+
+    # Extract retractions
+    if any(x in t for x in ("severe retraction", "severe retractions", "marked retraction", "deep retraction")):
+        out["retractions"] = "severe"
+    elif any(x in t for x in ("retraction", "pulling in", "chest pulling")):
+        out["retractions"] = "moderate"
+
+    # Detect chief_complaint from keywords
+    if not out.get("chief_complaint"):
+        if any(x in t for x in ("barky cough", "seal bark", "stridor", "croup", "laryngo")):
+            out["chief_complaint"] = "croup"
+        elif any(x in t for x in ("wheez", "asthma", "shortness of breath", "labored breath")):
+            out["chief_complaint"] = "asthma"
+        elif any(x in t for x in ("anaphyla", "hives", "angioedema", "swelling", "epinephrine", "allergic reaction", "airway")):
+            out["chief_complaint"] = "anaphylaxis"
+        elif any(x in t for x in ("fever", "temperature", "temp", "hot")):
+            out["chief_complaint"] = "fever"
+
     return out
 
 

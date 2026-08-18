@@ -214,25 +214,51 @@ def _med_flags_for_session(session: str) -> list[str]:
 
 
 def required_missing(case: CaseFields) -> list[str]:
-    """Must-ask fields before a disposition (executable intake policy)."""
+    """Must-ask fields before a disposition (condition-specific intake policy)."""
     missing: list[str] = []
+    complaint = case.get("chief_complaint", "fever")
 
-    tf = case.get("temp_f")
-    temp_unknown = bool(case.get("temp_unknown"))
-    if tf is None and not temp_unknown:
-        missing.append("temperature (or confirm unknown)")
+    if complaint == "croup":
+        # Croup needs: indicator of croup (barky cough or stridor) + breathing assessment
+        if case.get("barky_cough", "unknown") == "unknown" and case.get("stridor", "unknown") == "unknown":
+            missing.append("barky cough and/or stridor presence")
+        if case.get("breathing", "unknown") == "unknown":
+            missing.append("breathing (at rest and with activity)")
 
-    if case.get("alertness", "unknown") == "unknown":
-        missing.append("alertness / responsiveness")
+    elif complaint == "asthma":
+        # Asthma needs: wheeze/breathing issue + oxygen saturation or speech ability
+        if case.get("wheeze", "unknown") == "unknown" and case.get("breathing", "unknown") == "unknown":
+            missing.append("wheeze and/or breathing difficulty")
+        if case.get("oxygen_saturation") is None and case.get("ability_to_speak", "unknown") == "unknown":
+            missing.append("oxygen saturation (SpO2) or ability to speak")
 
-    if case.get("breathing", "unknown") == "unknown":
-        missing.append("breathing")
+    elif complaint == "anaphylaxis":
+        # Anaphylaxis needs: indicator of allergic reaction + breathing assessment
+        if (case.get("urticaria", "unknown") == "unknown" and
+            case.get("angioedema", "unknown") == "unknown" and
+            case.get("breathing", "unknown") == "unknown"):
+            missing.append("hives, swelling, and/or breathing difficulty")
+        if case.get("breathing", "unknown") == "unknown":
+            missing.append("breathing status")
 
-    if case.get("fluid_intake", "unknown") == "unknown":
-        missing.append("fluid intake")
+    else:
+        # Default to fever requirements
+        tf = case.get("temp_f")
+        temp_unknown = bool(case.get("temp_unknown"))
+        if tf is None and not temp_unknown:
+            missing.append("temperature (or confirm unknown)")
 
-    if case.get("urine_last_8h", "unknown") == "unknown":
-        missing.append("urination in the last 6–8 hours")
+        if case.get("alertness", "unknown") == "unknown":
+            missing.append("alertness / responsiveness")
+
+        if case.get("breathing", "unknown") == "unknown":
+            missing.append("breathing")
+
+        if case.get("fluid_intake", "unknown") == "unknown":
+            missing.append("fluid intake")
+
+        if case.get("urine_last_8h", "unknown") == "unknown":
+            missing.append("urination in the last 6–8 hours")
 
     return missing
 

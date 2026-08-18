@@ -70,36 +70,146 @@ except ImportError:
         return {}
 
 SAMPLE_SCENARIOS = {
-    "HOME_MANAGEMENT": {
-        "title": "Home Care",
-        "badge": "HOME MANAGEMENT",
-        "description": "Moderate fever, mild symptoms — manageable at home.",
-        "turns": [
-            "My 6-year-old has a fever, threw up once, and looks really wiped out.",
-            "Temp is 101.8. He's tired but answers me. No breathing issues. He's sipping water, not much though. He's been on medication for a recent ear infection.",
-            "He's on amoxicillin. Last dose was earlier tonight. Just vomited once. He peed earlier this evening."
-        ]
-    },
-    "URGENT_SAME_DAY": {
-        "title": "Urgent Same-Day",
-        "badge": "URGENT SAME-DAY",
-        "description": "Persistent vomiting, low fluid intake — needs same-day care.",
-        "turns": [
-            "5 year old fever and vomiting",
-            "He vomited 4 times in the last 2 hours and only sips",
-            "102.5 fever, breathing fine, answers questions, he keeps throwing up and won't drink much, he peed an hour ago"
-        ]
-    },
-    "ER_NOW": {
-        "title": "ER Now",
-        "badge": "EMERGENCY NOW",
-        "description": "Lethargy, dehydration risk — go to ER immediately.",
-        "turns": [
-            "My 6-year-old has a fever, threw up, and looks really wiped out. I'm worried.",
-            "Temp is 103.5. He's barely responding, just lying there. He doesn't want to drink. No trouble breathing. Also, there's been a stomach virus going around his school this week.",
-            "I don't think he's peed since this afternoon."
-        ]
-    }
+    "Fever": [
+        {
+            "id": "fever_home",
+            "title": "6-year-old with fever (Home Care)",
+            "disposition": "HOME_MANAGEMENT",
+            "description": "Moderate fever, mild symptoms — manageable at home.",
+            "turns": [
+                "My 6-year-old has a fever, threw up once, and looks really wiped out.",
+                "Temp is 101.8. He's tired but answers me. No breathing issues. He's sipping water, not much though. He's been on medication for a recent ear infection.",
+                "He's on amoxicillin. Last dose was earlier tonight. Just vomited once. He peed earlier this evening."
+            ]
+        },
+        {
+            "id": "fever_urgent",
+            "title": "5-year-old with repeated vomiting (Urgent)",
+            "disposition": "URGENT_SAME_DAY",
+            "description": "Persistent vomiting, low fluid intake — needs same-day care.",
+            "turns": [
+                "5 year old fever and vomiting",
+                "He vomited 4 times in the last 2 hours and only sips",
+                "102.5 fever, breathing fine, answers questions, he keeps throwing up and won't drink much, he peed an hour ago"
+            ]
+        },
+        {
+            "id": "fever_er",
+            "title": "6-year-old with lethargy (ER Now)",
+            "disposition": "ER_NOW",
+            "description": "Lethargy, dehydration risk — go to ER immediately.",
+            "turns": [
+                "My 6-year-old has a fever, threw up, and looks really wiped out. I'm worried.",
+                "Temp is 103.5. He's barely responding, just lying there. He doesn't want to drink. No trouble breathing. Also, there's been a stomach virus going around his school this week.",
+                "I don't think he's peed since this afternoon."
+            ]
+        }
+    ],
+    "Asthma": [
+        {
+            "id": "asthma_mild",
+            "title": "4-year-old with mild asthma (Home Care)",
+            "disposition": "HOME_MANAGEMENT",
+            "description": "Mild wheeze, speaking in full sentences, normal oxygen — manageable at home.",
+            "turns": [
+                "My 4-year-old has a wheeze and mild cough. He can run around but is more tired than usual.",
+                "He has no fever. Oxygen is 97%. He's speaking in full sentences and breathing normally at rest. Just a little wheezy when he runs.",
+                "No retractions. He's alert and eating normally. Has a history of asthma with an albuterol inhaler at home."
+            ]
+        },
+        {
+            "id": "asthma_moderate",
+            "title": "7-year-old with moderate asthma (Urgent)",
+            "disposition": "URGENT_SAME_DAY",
+            "description": "Moderate wheeze, short phrase speech, 93% SpO2 — needs urgent evaluation.",
+            "turns": [
+                "My 7-year-old son is having trouble with his breathing. He's wheezing pretty bad and coughing a lot.",
+                "No fever. Oxygen is 93%. He's breathing hard with visible chest retractions. He can only say short phrases. He has asthma and has had this before.",
+                "I gave him his rescue inhaler 30 minutes ago but he's not much better. He's alert but seems tired."
+            ]
+        },
+        {
+            "id": "asthma_severe",
+            "title": "5-year-old with severe asthma (ER Now)",
+            "disposition": "ER_NOW",
+            "description": "Severe distress, single word speech, 88% SpO2 — medical emergency.",
+            "turns": [
+                "My 5-year-old can barely talk and is breathing so hard. He's wheezing really bad and I'm scared.",
+                "No fever. Oxygen is 88% and not coming up with his rescue inhaler. He can only say single words. He has severe retractions and his breathing is very labored. He's had one intubation before.",
+                "He's alert but looks exhausted. His lips look a bit pale. I don't know if I should call 911."
+            ]
+        }
+    ],
+    "Anaphylaxis": [
+        {
+            "id": "anaphylaxis_mild",
+            "title": "3-year-old with mild hives (Home Care)",
+            "disposition": "HOME_MANAGEMENT",
+            "description": "Localized hives only, normal breathing, alert — monitor at home.",
+            "turns": [
+                "My 3-year-old just ate peanuts for the first time and now has some itchy spots on his face and neck.",
+                "He's alert and happy. Breathing is normal. No swelling. Just little red bumps where he scratched. Temperature is normal.",
+                "No difficulty swallowing. He's still playful. The hives are getting less itchy already. No known peanut allergy history."
+            ]
+        },
+        {
+            "id": "anaphylaxis_urgent",
+            "title": "6-year-old with angioedema (Urgent)",
+            "disposition": "URGENT_SAME_DAY",
+            "description": "Face/lip swelling, hives, thick tongue feeling — urgent evaluation needed.",
+            "turns": [
+                "My 6-year-old had shellfish at dinner and now her lips are swelling up and she's getting hives all over.",
+                "She says her tongue feels thick. She's alert and breathing OK but I can see swelling around her mouth and on her face. No stridor yet. She's breathing normally.",
+                "She's never had a shellfish allergy before. Temperature is normal. No wheezing. She's getting more hives on her chest."
+            ]
+        },
+        {
+            "id": "anaphylaxis_er",
+            "title": "4-year-old with anaphylaxis (ER Now)",
+            "disposition": "ER_NOW",
+            "description": "Wheezing, stridor, facial swelling, 92% SpO2, dizziness — CALL 911.",
+            "turns": [
+                "My 4-year-old just ate a bug and now he's having trouble breathing. He's wheezing and his face is really swollen.",
+                "He has hives all over his body. He says he feels dizzy. Oxygen is 92%. He's wheezing and has some stridor. His lips and tongue are very swollen. He's alert but seems confused.",
+                "He's breathing hard and doesn't look right. No known bee allergy. This is happening really fast."
+            ]
+        }
+    ],
+    "Croup": [
+        {
+            "id": "croup_mild",
+            "title": "2-year-old with mild croup (Home Care)",
+            "disposition": "HOME_MANAGEMENT",
+            "description": "Barky cough, mild stridor with crying only, normal oxygen — manage at home.",
+            "turns": [
+                "My 2-year-old has a barky cough that sounds like a seal. He's been sick for 2 days.",
+                "No fever or very low-grade. He has a barky cough and some mild stridor when he cries. He's playing between cough fits. Breathing is normal at rest with no retractions.",
+                "Oxygen is 96%. He's happy and alert. Eating and drinking normally. The cough is worse at night but he seems fine during the day."
+            ]
+        },
+        {
+            "id": "croup_moderate",
+            "title": "18-month-old with moderate croup (Urgent)",
+            "disposition": "URGENT_SAME_DAY",
+            "description": "Stridor at rest, chest retractions, 94% SpO2 — urgent care needed.",
+            "turns": [
+                "My 18-month-old has had a barky cough for 2 days and now has a different sounding breathing.",
+                "Low-grade fever. He has stridor even at rest now. I can see his chest pulling in when he breathes. He seems tired and fussy. Oxygen is 94%.",
+                "He's still alert but quieter than usual. He's not eating much. The stridor is getting worse. He has croup and his sibling has it too."
+            ]
+        },
+        {
+            "id": "croup_severe",
+            "title": "3-year-old with severe croup (ER Now)",
+            "disposition": "ER_NOW",
+            "description": "Severe stridor at rest, severe retractions, 89% SpO2, pale lips — CALL 911.",
+            "turns": [
+                "My 3-year-old woke up with terrible barky cough and can barely breathe. He's very distressed and I'm really scared.",
+                "No high fever. But he has loud stridor even at rest. His chest and neck are pulling in with every breath. Oxygen is 89%. He's sitting still, not playing, just focused on breathing.",
+                "He looks very ill. He's only able to say one word at a time. His lips look pale. He has had croup before but never this bad. I'm calling 911."
+            ]
+        }
+    ]
 }
 
 
@@ -108,38 +218,54 @@ def _apply_custom_css() -> None:
     st.markdown(f"<style>{CLINICAL_DARK_THEME_CSS}</style>", unsafe_allow_html=True)
 
 
-@st.dialog("📋 Copy Preset Turns", width="large")
-def _show_sample_modal(scenario_key: str) -> None:
-    """Display modal with compact turn-based layout and native copy buttons."""
-    scenario = SAMPLE_SCENARIOS[scenario_key]
-
-    st.markdown(f"### {scenario['title']}")
-    st.caption(scenario["description"])
+@st.dialog("📋 Preset Clinical Scenarios", width="large")
+def _show_sample_modal() -> None:
+    """Display modal with all scenarios organized by condition with copy buttons."""
+    st.markdown("## All Scenarios by Condition")
 
     st.markdown("""
     <div style="background-color: #12181F; border: 1px solid #0EAF9F; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 0.8rem; color: #E2E8F0;">
-    💡 <strong>Recommended approach:</strong> Submit each turn individually for accurate multi-turn reasoning. This gives the system better context and more accurate disposition. Hover over each turn to copy.
+    💡 <strong>How to use:</strong> Click on any code block to copy the turns. Submit each turn individually for better multi-turn reasoning, or combine them as needed.
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("#### Individual Turns (Hover to copy)")
+    for condition, scenarios in SAMPLE_SCENARIOS.items():
+        st.markdown(f"### {condition}")
 
-    cols = st.columns(len(scenario["turns"]))
-    for index, (col, turn) in enumerate(zip(cols, scenario["turns"]), start=1):
-        with col:
-            st.markdown(f"**Turn {index}**")
-            st.code(turn, language=None)
+        for scenario in scenarios:
+            # Color code by disposition
+            disposition_color = {
+                "HOME_MANAGEMENT": "#2ED573",
+                "URGENT_SAME_DAY": "#E76F51",
+                "ER_NOW": "#FF5252"
+            }.get(scenario["disposition"], "#8A99AD")
 
-    st.divider()
+            st.markdown(f"""
+            <div style="background-color: #1C2430; border: 1px solid {disposition_color}; border-radius: 6px; padding: 12px; margin: 8px 0;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background-color:{disposition_color};"></span>
+                    <strong style="color: #E2E8F0;">{scenario['title']}</strong>
+                </div>
+                <div style="font-size: 0.8rem; color: #8A99AD; margin-bottom: 8px;">{scenario['description']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    st.markdown("#### All Turns Combined (Alternative)")
-    combined_text = " ".join(scenario["turns"])
-    st.markdown("_Optional: Use this if submitting all at once instead of individual turns_")
-    st.code(combined_text, language=None)
+            # Display turns as separate copyable blocks
+            cols = st.columns(len(scenario["turns"]))
+            for index, (col, turn) in enumerate(zip(cols, scenario["turns"]), start=1):
+                with col:
+                    st.markdown(f"**Turn {index}**", help="Click to copy")
+                    st.code(turn, language=None)
 
-    st.divider()
-    if st.button("✖ Close Preset View", key=f"close_sample_modal_{scenario_key}", use_container_width=True):
-        st.session_state.show_sample_modal = None
+            # Combined version
+            st.markdown("_Or copy all turns combined:_")
+            combined_text = " ".join(scenario["turns"])
+            st.code(combined_text, language=None)
+            st.divider()
+
+    st.markdown("---")
+    if st.button("✖ Close Scenarios", use_container_width=True):
+        st.session_state.show_sample_modal = False
         st.rerun()
 
 
@@ -552,22 +678,9 @@ def main() -> None:
         st.markdown(conditions_html, unsafe_allow_html=True)
 
         st.divider()
-        st.markdown('<div class="scenario-section-header">Sample Scenarios</div>', unsafe_allow_html=True)
-
-        for key, details in SAMPLE_SCENARIOS.items():
-            card_html = f"""
-            <div style="font-size: 0.85rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 6px;">
-                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background-color:{'#2ED573' if key=='HOME_MANAGEMENT' else ('#E76F51' if key=='URGENT_SAME_DAY' else '#FF5252')};"></span>
-                {details['title']}
-            </div>
-            <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 4px; white-space: normal;">
-                {details['description']}
-            </div>
-            """
-
-            if st.button(details["title"], key=f"btn_scen_{key}", help="Copy clinical prompt scenario"):
-                st.session_state.show_sample_modal = key
-                st.rerun()
+        if st.button("📋 Preset Scenarios (All Conditions)", width='stretch', help="Browse and copy preset clinical scenarios"):
+            st.session_state.show_sample_modal = True
+            st.rerun()
 
         st.divider()
         if st.button("🔄 Reset Live Triage Session", width='stretch'):
@@ -618,7 +731,7 @@ def main() -> None:
         st.markdown(header_html, unsafe_allow_html=True)
 
         if st.session_state.show_sample_modal:
-            _show_sample_modal(st.session_state.show_sample_modal)
+            _show_sample_modal()
 
         # Independent Scroll Container: Restricts height and creates customized low-profile scroll bars
         chat_scroll_container = st.container(height=580, border=False)
@@ -631,19 +744,7 @@ def main() -> None:
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
                     <div style="font-weight: 600; color: #8A99AD; font-size: 0.95rem;">Awaiting Symptom Intake</div>
-                    <div style="font-size: 0.8rem; margin-top: 4px; color: #6B7280;">Submit child details or copy a Preset Scenario to begin.</div>
-                    <div style="margin-top: 2rem; padding: 1.5rem; background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; text-align: left;">
-                        <div style="font-weight: 700; color: #0EAF9F; font-size: 0.85rem; margin-bottom: 0.8rem;">Supported Conditions:</div>
-                        <div style="font-size: 0.8rem; color: #D1D5DB; line-height: 1.6;">
-                            <div style="margin-bottom: 0.6rem;"><strong>Fever</strong> - Home/Urgent/ER triage</div>
-                            <div style="margin-bottom: 0.6rem;"><strong>Asthma Exacerbation</strong> - Mild/Moderate/Severe</div>
-                            <div style="margin-bottom: 0.6rem;"><strong>Anaphylaxis/Allergy</strong> - Emergency assessment</div>
-                            <div style="margin-bottom: 0.6rem;"><strong>Croup</strong> - Westley score triage</div>
-                        </div>
-                        <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1C2430;">
-                            Start typing symptoms or select a preset from the sidebar.
-                        </div>
-                    </div>
+                    <div style="font-size: 0.8rem; margin-top: 4px; color: #6B7280;">Submit child details or use a Preset Scenario to begin. Check the sidebar for supported conditions.</div>
                 </div>
                 """
                 st.markdown(welcome_html, unsafe_allow_html=True)
@@ -682,7 +783,7 @@ def main() -> None:
         user_text = st.chat_input("Describe symptoms (temperature, hydration, behavior, breathing)...")
 
         if user_text:
-            st.session_state.show_sample_modal = None
+            st.session_state.show_sample_modal = False
             
             state: CareTraceState = st.session_state.ct_state
             state["raw_user_text"] = user_text
