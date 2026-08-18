@@ -527,29 +527,6 @@ def main() -> None:
         st.markdown(re.sub(r'\s+', ' ', sidebar_brand_html).strip(), unsafe_allow_html=True)
         
         st.divider()
-        st.markdown('<div class="scenario-section-header">Sample Scenarios</div>', unsafe_allow_html=True)
-
-        for key, details in SAMPLE_SCENARIOS.items():
-            card_html = f"""
-            <div style="font-size: 0.85rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 6px;">
-                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background-color:{'#2ED573' if key=='HOME_MANAGEMENT' else ('#E76F51' if key=='URGENT_SAME_DAY' else '#FF5252')};"></span>
-                {details['title']}
-            </div>
-            <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 4px; white-space: normal;">
-                {details['description']}
-            </div>
-            """
-            
-            if st.button(details["title"], key=f"btn_scen_{key}", help="Copy clinical prompt scenario"):
-                st.session_state.show_sample_modal = key
-                st.rerun()
-
-        st.divider()
-        if st.button("🔄 Reset Live Triage Session", width='stretch'):
-            _reset()
-            st.rerun()
-
-        st.divider()
         st.markdown('<div class="scenario-section-header">✅ Supported Conditions</div>', unsafe_allow_html=True)
 
         conditions_html = """
@@ -573,6 +550,29 @@ def main() -> None:
         </div>
         """
         st.markdown(conditions_html, unsafe_allow_html=True)
+
+        st.divider()
+        st.markdown('<div class="scenario-section-header">Sample Scenarios</div>', unsafe_allow_html=True)
+
+        for key, details in SAMPLE_SCENARIOS.items():
+            card_html = f"""
+            <div style="font-size: 0.85rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 6px;">
+                <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background-color:{'#2ED573' if key=='HOME_MANAGEMENT' else ('#E76F51' if key=='URGENT_SAME_DAY' else '#FF5252')};"></span>
+                {details['title']}
+            </div>
+            <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 4px; white-space: normal;">
+                {details['description']}
+            </div>
+            """
+
+            if st.button(details["title"], key=f"btn_scen_{key}", help="Copy clinical prompt scenario"):
+                st.session_state.show_sample_modal = key
+                st.rerun()
+
+        st.divider()
+        if st.button("🔄 Reset Live Triage Session", width='stretch'):
+            _reset()
+            st.rerun()
 
         st.divider()
         disclaimer_html = (

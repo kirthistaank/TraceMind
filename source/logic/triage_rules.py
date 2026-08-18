@@ -6,6 +6,8 @@ Session-scoped facts `cf(session_id, name, value)` keep rules module-level while
 multi-run evaluations without pyDatalog.clear() (which would strip rules).
 
 Integrate your official Fever CPG as additional predicates / facts.
+
+Condition routing: chief_complaint field routes to condition-specific CPG evaluators.
 """
 
 from __future__ import annotations
@@ -16,6 +18,9 @@ from typing import Any
 from pyDatalog import pyDatalog
 
 from source.state import CaseFields, TriageDecision
+from source.logic.cpg_asthma import evaluate_asthma_triage
+from source.logic.cpg_anaphylaxis import evaluate_anaphylaxis_triage
+from source.logic.cpg_croup import evaluate_croup_triage
 
 
 def _define_rules() -> None:
@@ -91,7 +96,11 @@ pyDatalog.create_terms(
     "cf, S, er_now, urgent_same_day, home_candidate, "
     "rule_fired, med_flag"
 )
-_define_rules()
+try:
+    _define_rules()
+except Exception:
+    # Thread initialization may fail at import time; will be retried in _ensure_thread_initialized()
+    pass
 
 
 def _ensure_thread_initialized() -> None:
@@ -230,8 +239,8 @@ def required_missing(case: CaseFields) -> list[str]:
 
 def evaluate_triage(case: CaseFields, missing_required: list[str]) -> TriageDecision:
     """
-    Returns disposition + rule trace. If required fields missing, caller should ask
-    questions (we return OUT_OF_SCOPE with reason incomplete_intake).
+    Route to condition-specific CPG evaluator based on chief_complaint.
+    Default: fever triage using PyDatalog rules (fever_evaluate_triage).
     """
     if case.get("intake_declined") and missing_required:
         return TriageDecision(
@@ -251,6 +260,22 @@ def evaluate_triage(case: CaseFields, missing_required: list[str]) -> TriageDeci
             out_of_scope_reason="incomplete_intake",
         )
 
+    complaint = case.get("chief_complaint", "fever")
+
+    # Route to condition-specific evaluators
+    if complaint == "asthma":
+        return evaluate_asthma_triage(case, missing_required)
+    elif complaint == "anaphylaxis":
+        return evaluate_anaphylaxis_triage(case, missing_required)
+    elif complaint == "croup":
+        return evaluate_croup_triage(case, missing_required)
+    else:
+        # Default: fever triage using PyDatalog
+        return _fever_evaluate_triage(case, missing_required)
+
+
+def _fever_evaluate_triage(case: CaseFields, missing_required: list[str]) -> TriageDecision:
+    """Original fever triage using PyDatalog rules."""
     session = str(uuid.uuid4())
     _case_to_facts(session, case)
 
