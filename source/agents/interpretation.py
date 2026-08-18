@@ -308,13 +308,17 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
     elif re.search(r"\b(ok|okay)\b", t) and any(x in t for x in ("kid", "child", "she", "he", "they", "baby")):
         out["alertness"] = "normal"
 
-    if any(x in t for x in ("wheezing", "retractions", "gasping")):
+    if any(x in t for x in ("wheezing", "retractions", "gasping", "stridor at rest", "can barely breathe", "can't breathe", "cannot breathe", "breathing hard", "labored breathing", "work of breathing", "working hard to breathe")):
         out["breathing"] = "distress"
-    elif any(x in t for x in ("breathing fast", "fast breathing", "rapid breathing")):
+    elif any(x in t for x in ("pulling in", "chest pulling", "chest retracting", "neck pulling", "ribs pulling")):
+        out["breathing"] = "distress"
+    elif any(x in t for x in ("different sounding breathing", "noisy breathing", "raspy breathing", "breathing differently")):
+        out["breathing"] = "tachypnea_concern"
+    elif any(x in t for x in ("breathing fast", "fast breathing", "rapid breathing", "breathing quickly")):
         out["breathing"] = "tachypnea_concern"
     elif "trouble breathing" in t and "no trouble breathing" not in t:
         out["breathing"] = "distress"
-    elif any(x in t for x in ("no trouble breathing", "no breathing issues", "no breathing problems", "breathing fine", "breathing normally")):
+    elif any(x in t for x in ("no trouble breathing", "no breathing issues", "no breathing problems", "breathing fine", "breathing normally", "breathing is normal", "breathing ok")):
         out["breathing"] = "normal"
     elif "breathing" in t and "no" in t and "issue" in t:
         out["breathing"] = "normal"
@@ -472,8 +476,10 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
         out["barky_cough"] = "yes"
     if any(x in t for x in ("stridor", "wheezing")) or any(x in t for x in ("barky", "cough")):
         out["stridor"] = "yes"
-        if any(x in t for x in ("loud stridor", "severe stridor", "stridor even at rest", "stridor at rest")):
+        if any(x in t for x in ("biphasic stridor", "biphasic", "expiratory stridor")):
             out["stridor_type"] = "biphasic"
+        elif any(x in t for x in ("stridor even at rest", "stridor at rest", "loud stridor", "severe stridor")):
+            out["stridor_type"] = "at_rest"
         elif any(x in t for x in ("inspiratory", "crying", "agitated", "with cry", "when cries")):
             out["stridor_type"] = "inspiratory"
 

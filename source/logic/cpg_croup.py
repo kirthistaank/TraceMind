@@ -93,20 +93,22 @@ def _is_severe_croup(case: dict[str, Any]) -> bool:
     if case.get("oxygen_saturation") is not None and case["oxygen_saturation"] < 92:
         return True
 
-    # Stridor at rest with significant retractions
-    if case.get("stridor") == "yes" and case.get("retractions") in ("moderate", "severe"):
+    # Stridor with severe retractions (biphasic or expiratory stridor = ER)
+    if case.get("stridor") == "yes" and case.get("retractions") == "severe":
         return True
 
-    # Biphasic or expiratory stridor (suggests lower airway involvement)
+    # Biphasic or expiratory stridor (lower airway involvement — always ER)
     if case.get("stridor_type") in ("biphasic", "expiratory"):
         return True
 
-    # Respiratory distress
-    if case.get("breathing") == "distress":
+    # Severe retractions alone
+    if case.get("retractions") == "severe":
         return True
 
-    # Severe retractions
-    if case.get("retractions") == "severe":
+    # Breathing distress only triggers ER when combined with another severe indicator
+    if case.get("breathing") == "distress" and case.get("stridor_type") in ("biphasic", "expiratory"):
+        return True
+    if case.get("breathing") == "distress" and case.get("oxygen_saturation") is not None and case["oxygen_saturation"] < 92:
         return True
 
     # Altered mental status / lethargy
@@ -141,8 +143,16 @@ def _is_moderate_croup(case: dict[str, Any]) -> bool:
     if case.get("retractions") == "moderate":
         return True
 
-    # Stridor at rest (without severe retractions)
-    if case.get("stridor") == "yes" and case.get("retractions") not in ("severe", "moderate"):
+    # Stridor at rest (clinically moderate — not just with agitation)
+    if case.get("stridor_type") == "at_rest":
+        return True
+
+    # Stridor present with any retractions → at least moderate
+    if case.get("stridor") == "yes" and case.get("retractions") in ("mild", "moderate"):
+        return True
+
+    # Respiratory distress alone → at minimum urgent evaluation
+    if case.get("breathing") == "distress":
         return True
 
     # Tachypnea
