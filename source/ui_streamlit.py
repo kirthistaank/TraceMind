@@ -852,9 +852,9 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.3rem;
 }
 .sidebar-brand-icon {
-    flex: 0 0 56px;
-    width: 56px;
-    height: 56px;
+    flex: 0 0 76px;
+    width: 76px;
+    height: 76px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -865,7 +865,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 !important;
 }
 .sidebar-brand-logo {
-    height: 68px;
+    height: 92px;
     width: auto;
     max-width: none;
     object-fit: contain;
@@ -874,7 +874,7 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     mix-blend-mode: screen;
     filter: invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.15);
-    transform: scale(1.3);
+    transform: scale(1.45);
     transform-origin: center center;
 }
 .sidebar-brand-text {
@@ -882,17 +882,17 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 0;
 }
 .sidebar-brand-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #FFFFFF;
-    line-height: 1;
+    line-height: 1.1;
     margin: 0;
 }
 .sidebar-brand-subtitle {
-    font-size: 0.6rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
     color: #0EAF9F;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     margin: 0;
 }
