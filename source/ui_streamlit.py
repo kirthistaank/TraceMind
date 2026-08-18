@@ -625,28 +625,28 @@ def main() -> None:
 
         with chat_scroll_container:
             if not st.session_state.ct_chat:
-                st.markdown("""
+                welcome_html = """
                 <div style="text-align: center; padding: 3rem 1rem; color: #56667A;">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#233144" stroke-width="2" style="margin-bottom: 12px;">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
                     <div style="font-weight: 600; color: #8A99AD; font-size: 0.95rem;">Awaiting Symptom Intake</div>
                     <div style="font-size: 0.8rem; margin-top: 4px; color: #6B7280;">Submit child details or copy a Preset Scenario to begin.</div>
-
                     <div style="margin-top: 2rem; padding: 1.5rem; background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; text-align: left;">
-                        <div style="font-weight: 700; color: #0EAF9F; font-size: 0.85rem; margin-bottom: 0.8rem;">🩺 This System Supports:</div>
+                        <div style="font-weight: 700; color: #0EAF9F; font-size: 0.85rem; margin-bottom: 0.8rem;">Supported Conditions:</div>
                         <div style="font-size: 0.8rem; color: #D1D5DB; line-height: 1.6;">
-                            <div style="margin-bottom: 0.6rem;"><strong>🌡️ Fever</strong> - Home/Urgent/ER triage</div>
-                            <div style="margin-bottom: 0.6rem;"><strong>🫁 Asthma Exacerbation</strong> - Mild/Moderate/Severe assessment</div>
-                            <div style="margin-bottom: 0.6rem;"><strong>🚨 Anaphylaxis/Allergy</strong> - Emergency discrimination</div>
-                            <div><strong>🗣️ Croup</strong> - Westley score-based severity</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>Fever</strong> - Home/Urgent/ER triage</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>Asthma Exacerbation</strong> - Mild/Moderate/Severe</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>Anaphylaxis/Allergy</strong> - Emergency assessment</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>Croup</strong> - Westley score triage</div>
                         </div>
                         <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1C2430;">
-                            Start typing symptoms or select a preset scenario from the sidebar.
+                            Start typing symptoms or select a preset from the sidebar.
                         </div>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """
+                st.markdown(welcome_html, unsafe_allow_html=True)
             else:
                 for index, turn in enumerate(st.session_state.ct_chat):
                     st.markdown(f"""
