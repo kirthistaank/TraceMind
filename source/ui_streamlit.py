@@ -845,11 +845,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .sidebar-brand-container {
-    padding: 0.5rem 0 1rem;
+    padding: 0.3rem 0 0.5rem;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 1rem;
+    gap: 8px;
+    margin-bottom: 0.5rem;
 }
 .sidebar-brand-icon {
     flex: 0 0 76px;
@@ -902,7 +902,8 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #56667A;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.35rem;
+    margin-top: 0.2rem;
     font-weight: 700;
 }
 
@@ -935,12 +936,12 @@ h1, h2, h3, h4, h5, h6 {
     color: #E2E8F0 !important;
     border: 1px solid #1E2D4A !important;
     border-radius: 8px !important;
-    padding: 0.75rem 1rem !important;
+    padding: 0.5rem 0.8rem !important;
     width: 100% !important;
     text-align: left !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: block !important;
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 0.35rem !important;
     font-weight: 600 !important;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
@@ -965,20 +966,20 @@ div.stButton > button {
 .custom-card-container {
     background-color: #12181F;
     border: 1px solid #1C2430;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
 }
 
 .live-triage-header-bar {
     background-color: #10161D;
     border: 1px solid #1B232E;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
 }
 .live-pulse-container {
     display: flex;
@@ -1015,9 +1016,9 @@ div.stButton > button {
 .chat-row-assistant {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 8px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 .robot-avatar {
     width: 36px;
@@ -1034,30 +1035,30 @@ div.stButton > button {
 .chat-bubble-assistant-new {
     background-color: #12181E;
     border: 1px solid #1C2430;
-    border-radius: 4px 16px 16px 16px;
-    padding: 1.25rem;
+    border-radius: 4px 12px 12px 12px;
+    padding: 0.8rem;
     flex-grow: 1;
     max-width: 90%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chat-bubble-meta {
     font-size: 0.7rem;
     color: #56667A;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .logic-trace-card {
     background-color: #12181F;
-    border-left: 4px solid #56667A;
+    border-left: 3px solid #56667A;
     border-top: 1px solid #1C2430;
     border-right: 1px solid #1C2430;
     border-bottom: 1px solid #1C2430;
-    border-radius: 0 8px 8px 0;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
+    border-radius: 0 6px 6px 0;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.35rem;
 }
 .logic-trace-card.active-rule-home {
     border-left-color: #2ED573 !important;
@@ -1072,12 +1073,12 @@ div.stButton > button {
 .progress-radial-wrapper {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    padding: 1rem;
+    gap: 0.8rem;
+    padding: 0.8rem;
     background-color: #12181F;
     border: 1px solid #1C2430;
-    border-radius: 12px;
-    margin-bottom: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
 }
 
 #MainMenu {visibility: hidden;}
