@@ -110,29 +110,35 @@ def _apply_custom_css() -> None:
 
 @st.dialog("📋 Copy Preset Turns", width="large")
 def _show_sample_modal(scenario_key: str) -> None:
-    """Display modal with turns list in premium dark layout."""
+    """Display modal with compact turn-based layout and native copy buttons."""
     scenario = SAMPLE_SCENARIOS[scenario_key]
 
     st.markdown(f"### {scenario['title']}")
     st.caption(scenario["description"])
+
+    st.markdown("""
+    <div style="background-color: #12181F; border: 1px solid #0EAF9F; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 0.8rem; color: #E2E8F0;">
+    💡 <strong>Recommended approach:</strong> Submit each turn individually for accurate multi-turn reasoning. This gives the system better context and more accurate disposition. Hover over each turn to copy.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("#### Individual Turns (Hover to copy)")
+
+    cols = st.columns(len(scenario["turns"]))
+    for index, (col, turn) in enumerate(zip(cols, scenario["turns"]), start=1):
+        with col:
+            st.markdown(f"**Turn {index}**")
+            st.code(turn, language=None)
+
     st.divider()
 
-    for index, turn in enumerate(scenario["turns"], start=1):
-        st.markdown(f"**Turn {index}:**")
-        st.code(turn, language=None)
-
-    st.divider()
-    st.markdown("**All turns combined**")
+    st.markdown("#### All Turns Combined (Alternative)")
     combined_text = " ".join(scenario["turns"])
-    st.text_area(
-        "Copy this text into the chat input below:",
-        value=combined_text,
-        height=120,
-        key=f"sample_combined_{scenario_key}",
-        label_visibility="visible",
-    )
+    st.markdown("_Optional: Use this if submitting all at once instead of individual turns_")
+    st.code(combined_text, language=None)
 
-    if st.button("Close Preset View", key=f"close_sample_modal_{scenario_key}"):
+    st.divider()
+    if st.button("✖ Close Preset View", key=f"close_sample_modal_{scenario_key}", use_container_width=True):
         st.session_state.show_sample_modal = None
         st.rerun()
 
@@ -544,10 +550,35 @@ def main() -> None:
             st.rerun()
 
         st.divider()
+        st.markdown('<div class="scenario-section-header">✅ Supported Conditions</div>', unsafe_allow_html=True)
+
+        conditions_html = """
+        <div style="font-size: 0.8rem; color: #E2E8F0; line-height: 1.6;">
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #0EAF9F;">🌡️ Fever</strong><br>
+                <span style="color: #8A99AD; font-size: 0.75rem;">Seattle Children's CPG<br>Triage: Home/Urgent/ER</span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #0EAF9F;">🫁 Asthma Exacerbation</strong><br>
+                <span style="color: #8A99AD; font-size: 0.75rem;">NIH NAEPP Guidelines<br>Mild/Moderate/Severe</span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #0EAF9F;">🚨 Anaphylaxis/Allergy</strong><br>
+                <span style="color: #8A99AD; font-size: 0.75rem;">AAP/AAAAI Guidelines<br>Local/Reaction/Emergency</span>
+            </div>
+            <div>
+                <strong style="color: #0EAF9F;">🗣️ Croup</strong><br>
+                <span style="color: #8A99AD; font-size: 0.75rem;">AAP CPG (Westley Score)<br>Mild/Moderate/Severe</span>
+            </div>
+        </div>
+        """
+        st.markdown(conditions_html, unsafe_allow_html=True)
+
+        st.divider()
         st.markdown("""
         <div style="background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; padding: 10px; font-size: 0.75rem; color: #8A99AD;">
             <strong>Neurosymbolic Graph-RAG</strong> clinical decision helper.<br><br>
-            Grounds symptoms into pediatric clinical pathways.
+            Grounds symptoms into pediatric clinical pathways with SNOMED-CT knowledge graph.
         </div>
         """, unsafe_allow_html=True)
 
@@ -591,7 +622,7 @@ def main() -> None:
 
         # Independent Scroll Container: Restricts height and creates customized low-profile scroll bars
         chat_scroll_container = st.container(height=580, border=False)
-        
+
         with chat_scroll_container:
             if not st.session_state.ct_chat:
                 st.markdown("""
@@ -600,7 +631,20 @@ def main() -> None:
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
                     <div style="font-weight: 600; color: #8A99AD; font-size: 0.95rem;">Awaiting Symptom Intake</div>
-                    <div style="font-size: 0.8rem; margin-top: 4px;">Submit child details or copy a Preset Scenario to begin.</div>
+                    <div style="font-size: 0.8rem; margin-top: 4px; color: #6B7280;">Submit child details or copy a Preset Scenario to begin.</div>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; text-align: left;">
+                        <div style="font-weight: 700; color: #0EAF9F; font-size: 0.85rem; margin-bottom: 0.8rem;">🩺 This System Supports:</div>
+                        <div style="font-size: 0.8rem; color: #D1D5DB; line-height: 1.6;">
+                            <div style="margin-bottom: 0.6rem;"><strong>🌡️ Fever</strong> - Home/Urgent/ER triage</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>🫁 Asthma Exacerbation</strong> - Mild/Moderate/Severe assessment</div>
+                            <div style="margin-bottom: 0.6rem;"><strong>🚨 Anaphylaxis/Allergy</strong> - Emergency discrimination</div>
+                            <div><strong>🗣️ Croup</strong> - Westley score-based severity</div>
+                        </div>
+                        <div style="font-size: 0.75rem; color: #8A99AD; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #1C2430;">
+                            Start typing symptoms or select a preset scenario from the sidebar.
+                        </div>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -615,6 +659,24 @@ def main() -> None:
                     with st.container():
                         _render_assistant_reply(turn["assistant"])
                         st.markdown(f"""<div class="chat-bubble-meta">TraceMind System &bull; Active</div>""", unsafe_allow_html=True)
+
+                # Auto-scroll to latest message within the container
+                last_index = len(st.session_state.ct_chat) - 1
+                st.markdown(f"""
+                <div id="latest-response" style="margin-top: 20px;"></div>
+                <script>
+                    setTimeout(function() {{
+                        const container = document.querySelector('[data-testid="stVerticalBlock"]');
+                        if (container) {{
+                            container.scrollTop = container.scrollHeight;
+                        }}
+                        const latestResponse = document.getElementById('latest-response');
+                        if (latestResponse) {{
+                            latestResponse.scrollIntoView({{behavior: 'smooth', block: 'center'}});
+                        }}
+                    }}, 100);
+                </script>
+                """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
         user_text = st.chat_input("Describe symptoms (temperature, hydration, behavior, breathing)...")
