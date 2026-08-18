@@ -65,15 +65,11 @@ def evaluate_asthma_triage(case: dict[str, Any], missing_required: list[str]) ->
 
 def _is_severe_exacerbation(case: dict[str, Any]) -> bool:
     """Severe exacerbation criteria (any one = severe)."""
-    # Hypoxia
+    # Hypoxia (SpO2 < 90%)
     if case.get("oxygen_saturation") is not None and case["oxygen_saturation"] < 90:
         return True
 
-    # Severe respiratory distress
-    if case.get("breathing") == "distress":
-        return True
-
-    # Severe retractions
+    # Severe retractions alone indicate severity
     if case.get("retractions") == "severe":
         return True
 
@@ -81,8 +77,16 @@ def _is_severe_exacerbation(case: dict[str, Any]) -> bool:
     if case.get("alertness") == "altered":
         return True
 
-    # Inability to speak full sentences (only words or no speech)
-    if case.get("ability_to_speak") in ("words_only", "no_speech"):
+    # Inability to speak single words or no speech
+    if case.get("ability_to_speak") == "single_words":
+        return True
+
+    # Respiratory distress ONLY with severe retractions = severe
+    if case.get("breathing") == "distress" and case.get("retractions") == "severe":
+        return True
+
+    # Respiratory distress + hypoxia (SpO2 < 92%)
+    if case.get("breathing") == "distress" and case.get("oxygen_saturation") is not None and case["oxygen_saturation"] < 92:
         return True
 
     # Very high respiratory rate (age-specific)
@@ -109,12 +113,20 @@ def _is_moderate_exacerbation(case: dict[str, Any]) -> bool:
     if case.get("retractions") == "moderate":
         return True
 
+    # Respiratory distress with normal/good oxygen → moderate
+    ox = case.get("oxygen_saturation")
+    if case.get("breathing") == "distress" and (ox is None or ox >= 95):
+        return True
+
     # Tachypnea concern (elevated RR but not severe)
     if case.get("breathing") == "tachypnea_concern":
         return True
 
+    # Short phrase speech ability → moderate distress
+    if case.get("ability_to_speak") == "short_phrases":
+        return True
+
     # Moderate hypoxia (91-94%)
-    ox = case.get("oxygen_saturation")
     if ox is not None and 90 < ox < 95:
         return True
 

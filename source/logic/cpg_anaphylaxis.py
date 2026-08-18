@@ -88,32 +88,26 @@ def _is_anaphylaxis(case: dict[str, Any]) -> bool:
     """
     Anaphylaxis criteria (AAP/AAAAI):
     - Multi-system involvement (skin + airway/breathing/GI/CV), OR
-    - Any airway compromise (stridor, wheezing, breathing distress), OR
-    - Hypotension / syncope, OR
-    - Angioedema of airway/lips + any systemic sign
+    - Severe airway compromise (stridor with allergic signs), OR
+    - Cardiovascular collapse (hypotension / syncope), OR
+    - Severe angioedema (airway involvement)
     """
 
-    # Airway compromise = anaphylaxis until proven otherwise
+    # Stridor = airway involvement = anaphylaxis until proven otherwise
     if case.get("stridor") == "yes":
         return True
-    if case.get("breathing") == "distress":
-        return True
-    if case.get("wheeze") == "yes":
+
+    # Cardiovascular collapse (hypotension / syncope)
+    if case.get("hypotension") == "yes" or case.get("syncope_or_presyncope") == "yes":
         return True
 
-    # Cardiovascular compromise
-    if case.get("hypotension") == "yes":
-        return True
-    if case.get("syncope_or_presyncope") == "yes":
+    # Airway angioedema (lips, tongue, throat swelling)
+    if case.get("angioedema") == "airway":
         return True
 
-    # Severe angioedema (airway or systemic)
-    if case.get("angioedema") in ("airway", "systemic"):
-        return True
-
-    # Multi-system involvement: skin + airway/GI/CV
-    has_skin = case.get("urticaria") == "yes" or case.get("angioedema") != "none"
-    has_airway = case.get("stridor") == "yes" or case.get("breathing") == "distress"
+    # Multi-system involvement: skin (urticaria/angioedema) + airway/GI/CV signs
+    has_skin = case.get("urticaria") == "yes" or case.get("angioedema") in ("face", "lips", "systemic")
+    has_airway = case.get("wheeze") == "yes" or (case.get("breathing") == "distress" and case.get("urticaria") == "yes")
     has_gi = case.get("gi_symptoms") in ("vomiting", "abdominal_pain", "diarrhea")
     has_cv = case.get("hypotension") == "yes"
     has_neuro = case.get("alertness") == "altered"

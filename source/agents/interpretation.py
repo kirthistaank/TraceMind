@@ -308,9 +308,14 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
     elif re.search(r"\b(ok|okay)\b", t) and any(x in t for x in ("kid", "child", "she", "he", "they", "baby")):
         out["alertness"] = "normal"
 
-    if any(x in t for x in ("wheezing", "retractions", "gasping", "stridor at rest", "can barely breathe", "can't breathe", "cannot breathe", "breathing hard", "labored breathing", "work of breathing", "working hard to breathe")):
+    # Check for NEGATIVE breathing indicators first (to avoid substring matching like "no wheezing", "no retractions")
+    if any(x in t for x in ("no trouble breathing", "no breathing issues", "no breathing problems", "breathing fine", "breathing normally", "breathing is normal", "breathing ok", "no retractions", "no wheezing")):
+        out["breathing"] = "normal"
+    elif any(x in t for x in ("wheezing", "gasping", "stridor at rest", "can barely breathe", "can't breathe", "cannot breathe", "breathing hard", "labored breathing", "work of breathing", "working hard to breathe")):
         out["breathing"] = "distress"
     elif any(x in t for x in ("pulling in", "chest pulling", "chest retracting", "neck pulling", "ribs pulling")):
+        out["breathing"] = "distress"
+    elif "retractions" in t and "no retractions" not in t:
         out["breathing"] = "distress"
     elif any(x in t for x in ("different sounding breathing", "noisy breathing", "raspy breathing", "breathing differently")):
         out["breathing"] = "tachypnea_concern"
@@ -318,8 +323,6 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
         out["breathing"] = "tachypnea_concern"
     elif "trouble breathing" in t and "no trouble breathing" not in t:
         out["breathing"] = "distress"
-    elif any(x in t for x in ("no trouble breathing", "no breathing issues", "no breathing problems", "breathing fine", "breathing normally", "breathing is normal", "breathing ok")):
-        out["breathing"] = "normal"
     elif "breathing" in t and "no" in t and "issue" in t:
         out["breathing"] = "normal"
     elif re.search(r"\b(breathing|breath|respirations?)\b.*\b(ok|okay|fine|normal|clear|good)\b", t):
@@ -474,7 +477,9 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
     # Extract condition-specific fields for croup
     if any(x in t for x in ("barky cough", "seal bark", "seal-like", "cough like a seal", "cough sounds like a seal")):
         out["barky_cough"] = "yes"
-    if any(x in t for x in ("stridor", "wheezing")) or any(x in t for x in ("barky", "cough")):
+    if any(x in t for x in ("no stridor", "no wheezing")):
+        out["stridor"] = "no"
+    elif any(x in t for x in ("stridor", "wheezing")) or any(x in t for x in ("barky", "cough")):
         out["stridor"] = "yes"
         if any(x in t for x in ("biphasic stridor", "biphasic", "expiratory stridor")):
             out["stridor_type"] = "biphasic"
@@ -484,15 +489,18 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
             out["stridor_type"] = "inspiratory"
 
     # Extract ability to speak (important for asthma/croup severity)
-    if any(x in t for x in ("can't talk", "cannot talk", "barely talk", "can barely talk", "only say", "only says", "single word", "one word")):
-        out["ability_to_speak"] = "single_words"
-    elif any(x in t for x in ("short phrase", "short phrases", "few words")):
-        out["ability_to_speak"] = "short_phrases"
-    elif any(x in t for x in ("full sentence", "full sentences", "talking normally", "speaking in full")):
+    # Check most specific patterns first to avoid false matches
+    if any(x in t for x in ("full sentence", "full sentences", "talking normally", "speaking in full", "speaking in full sentences")):
         out["ability_to_speak"] = "full_sentences"
+    elif any(x in t for x in ("short phrase", "short phrases", "few words", "only short phrases")):
+        out["ability_to_speak"] = "short_phrases"
+    elif any(x in t for x in ("can't talk", "cannot talk", "barely talk", "can barely talk", "only say", "only says", "only word", "single words", "single word", "one word")):
+        out["ability_to_speak"] = "single_words"
 
-    # Extract condition-specific fields for asthma
-    if any(x in t for x in ("wheez", "wheezing", "wheeze")):
+    # Extract condition-specific fields for asthma (check negatives first)
+    if any(x in t for x in ("no wheez", "no wheezing", "no wheeze")):
+        out["wheeze"] = "no"
+    elif any(x in t for x in ("wheez", "wheezing", "wheeze")):
         out["wheeze"] = "yes"
     m_oxygen = re.search(r"(?:oxygen|spo2|sp\s*o\s*2|o2)\s*(?:is|:)?\s*(\d{1,3})%?\b", t)
     if m_oxygen:
@@ -502,25 +510,45 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
             pass
 
     # Extract condition-specific fields for anaphylaxis
-    if any(x in t for x in ("hive", "urticaria", "rash")):
-        out["urticaria"] = "yes"
-    if any(x in t for x in ("swelling", "edema", "angioedema", "lips swelling", "face swelling", "tongue swelling", "throat swelling")):
+    if any(x in t for x in ("no swelling", "no edema", "no angioedema")):
+        out["angioedema"] = "none"
+    elif any(x in t for x in ("swelling", "edema", "angioedema", "lips swelling", "face swelling", "tongue swelling", "throat swelling")):
         out["angioedema"] = "yes"
 
+    if any(x in t for x in ("hive", "urticaria", "rash")):
+        out["urticaria"] = "yes"
+
     # Extract retractions
-    if any(x in t for x in ("severe retraction", "severe retractions", "marked retraction", "deep retraction")):
+    if any(x in t for x in ("no retraction", "no retractions", "without retraction", "without retractions")):
+        out["retractions"] = "none"
+    elif any(x in t for x in ("severe retraction", "severe retractions", "marked retraction", "deep retraction")):
         out["retractions"] = "severe"
-    elif any(x in t for x in ("retraction", "pulling in", "chest pulling")):
+    elif any(x in t for x in ("mild retraction", "mild retractions", "minimal retractions")):
+        out["retractions"] = "mild"
+    elif any(x in t for x in ("retraction", "pulling in", "chest pulling", "neck pulling")):
         out["retractions"] = "moderate"
 
-    # Detect chief_complaint from keywords
+    # Detect chief_complaint from keywords (order matters: most specific first)
     if not out.get("chief_complaint"):
-        if any(x in t for x in ("barky cough", "seal bark", "stridor", "croup", "laryngo")):
-            out["chief_complaint"] = "croup"
-        elif any(x in t for x in ("wheez", "asthma", "shortness of breath", "labored breath")):
-            out["chief_complaint"] = "asthma"
-        elif any(x in t for x in ("anaphyla", "hives", "angioedema", "swelling", "epinephrine", "allergic reaction", "airway")):
+        # Anaphylaxis: look for multi-system allergic signs first
+        if any(x in t for x in ("anaphyla", "hives", "angioedema", "epinephrine")):
             out["chief_complaint"] = "anaphylaxis"
+        # Anaphylaxis: swelling + allergic context (but not stridor alone which is croup)
+        elif any(x in t for x in ("swelling", "lips swelling", "face swelling", "tongue swelling", "throat swelling")) and any(x in t for x in ("hive", "allerg", "rash")):
+            out["chief_complaint"] = "anaphylaxis"
+        # Croup: barky cough is most specific for croup
+        elif any(x in t for x in ("barky cough", "seal bark", "seal-like", "croup", "laryngo")):
+            out["chief_complaint"] = "croup"
+        # Croup: stridor alone (but not with wheezing/asthma context)
+        elif "stridor" in t and not any(x in t for x in ("asthma", "wheez", "rescue inhaler")):
+            out["chief_complaint"] = "croup"
+        # Asthma: wheeze with asthma context
+        elif any(x in t for x in ("asthma", "rescue inhaler", "albuterol", "bronchodilator")):
+            out["chief_complaint"] = "asthma"
+        # Asthma: wheeze alone (but not croup/stridor context)
+        elif "wheez" in t and not any(x in t for x in ("barky cough", "seal bark", "stridor even at rest")):
+            out["chief_complaint"] = "asthma"
+        # Fever: default
         elif any(x in t for x in ("fever", "temperature", "temp", "hot")):
             out["chief_complaint"] = "fever"
 

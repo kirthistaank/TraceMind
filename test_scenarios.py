@@ -1,0 +1,193 @@
+#!/usr/bin/env python3
+"""
+Test all preset scenarios against the triage system.
+Reports expected vs actual dispositions.
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from source.agents.interpretation import interpret_user_message
+from source.logic.triage_rules import evaluate_triage, required_missing
+from source.state import default_case
+from source.config import Settings
+
+SCENARIOS = {
+    "Fever": [
+        {
+            "id": "fever_home",
+            "expected": "HOME_MANAGEMENT",
+            "turns": [
+                "My 6-year-old has a fever, threw up once, and looks really wiped out.",
+                "Temp is 101.8. He's tired but answers me. No breathing issues. He's sipping water, not much though. He's been on medication for a recent ear infection.",
+                "He's on amoxicillin. Last dose was earlier tonight. Just vomited once. He peed earlier this evening."
+            ]
+        },
+        {
+            "id": "fever_urgent",
+            "expected": "URGENT_SAME_DAY",
+            "turns": [
+                "5 year old fever and vomiting",
+                "He vomited 4 times in the last 2 hours and only sips",
+                "102.5 fever, breathing fine, answers questions, he keeps throwing up and won't drink much, he peed an hour ago"
+            ]
+        },
+        {
+            "id": "fever_er",
+            "expected": "ER_NOW",
+            "turns": [
+                "My 6-year-old has a fever, threw up, and looks really wiped out. I'm worried.",
+                "Temp is 103.5. He's barely responding, just lying there. He doesn't want to drink. No trouble breathing. Also, there's been a stomach virus going around his school this week.",
+                "I don't think he's peed since this afternoon."
+            ]
+        }
+    ],
+    "Asthma": [
+        {
+            "id": "asthma_mild",
+            "expected": "HOME_MANAGEMENT",
+            "turns": [
+                "My 4-year-old has a wheeze and mild cough. He can run around but is more tired than usual.",
+                "He has no fever. Oxygen is 97%. He's speaking in full sentences and breathing normally at rest. Just a little wheezy when he runs.",
+                "No retractions. He's alert and eating normally. Has a history of asthma with an albuterol inhaler at home."
+            ]
+        },
+        {
+            "id": "asthma_moderate",
+            "expected": "URGENT_SAME_DAY",
+            "turns": [
+                "My 7-year-old son is having trouble with his breathing. He's wheezing pretty bad and coughing a lot.",
+                "No fever. Oxygen is 93%. He's breathing hard with visible chest retractions. He can only say short phrases. He has asthma and has had this before.",
+                "I gave him his rescue inhaler 30 minutes ago but he's not much better. He's alert but seems tired."
+            ]
+        },
+        {
+            "id": "asthma_severe",
+            "expected": "ER_NOW",
+            "turns": [
+                "My 5-year-old can barely talk and is breathing so hard. He's wheezing really bad and I'm scared.",
+                "No fever. Oxygen is 88% and not coming up with his rescue inhaler. He can only say single words. He has severe retractions and his breathing is very labored. He's had one intubation before.",
+                "He's alert but looks exhausted. His lips look a bit pale. I don't know if I should call 911."
+            ]
+        }
+    ],
+    "Anaphylaxis": [
+        {
+            "id": "anaphylaxis_mild",
+            "expected": "HOME_MANAGEMENT",
+            "turns": [
+                "My 3-year-old just ate peanuts for the first time and now has some itchy spots on his face and neck.",
+                "He's alert and happy. Breathing is normal. No swelling. Just little red bumps where he scratched. Temperature is normal.",
+                "No difficulty swallowing. He's still playful. The hives are getting less itchy already. No known peanut allergy history."
+            ]
+        },
+        {
+            "id": "anaphylaxis_urgent",
+            "expected": "URGENT_SAME_DAY",
+            "turns": [
+                "My 6-year-old had shellfish at dinner and now her lips are swelling up and she's getting hives all over.",
+                "She says her tongue feels thick. She's alert and breathing OK but I can see swelling around her mouth and on her face. No stridor yet. She's breathing normally.",
+                "She's never had a shellfish allergy before. Temperature is normal. No wheezing. She's getting more hives on her chest."
+            ]
+        },
+        {
+            "id": "anaphylaxis_er",
+            "expected": "ER_NOW",
+            "turns": [
+                "My 4-year-old just ate a bug and now he's having trouble breathing. He's wheezing and his face is really swollen.",
+                "He has hives all over his body. He says he feels dizzy. Oxygen is 92%. He's wheezing and has some stridor. His lips and tongue are very swollen. He's alert but seems confused.",
+                "He's breathing hard and doesn't look right. No known bee allergy. This is happening really fast."
+            ]
+        }
+    ],
+    "Croup": [
+        {
+            "id": "croup_mild",
+            "expected": "HOME_MANAGEMENT",
+            "turns": [
+                "My 2-year-old has a barky cough that sounds like a seal. He's been sick for 2 days.",
+                "No fever or very low-grade. He has a barky cough and some mild stridor when he cries. He's playing between cough fits. Breathing is normal at rest with no retractions.",
+                "Oxygen is 96%. He's happy and alert. Eating and drinking normally. The cough is worse at night but he seems fine during the day."
+            ]
+        },
+        {
+            "id": "croup_moderate",
+            "expected": "URGENT_SAME_DAY",
+            "turns": [
+                "My 18-month-old has had a barky cough for 2 days and now has a different sounding breathing.",
+                "Low-grade fever. He has stridor even at rest now. I can see his chest pulling in when he breathes. He seems tired and fussy. Oxygen is 94%.",
+                "He's still alert but quieter than usual. He's not eating much. The stridor is getting worse. He has croup and his sibling has it too."
+            ]
+        },
+        {
+            "id": "croup_severe",
+            "expected": "ER_NOW",
+            "turns": [
+                "My 3-year-old woke up with terrible barky cough and can barely breathe. He's very distressed and I'm really scared.",
+                "No high fever. But he has loud stridor even at rest. His chest and neck are pulling in with every breath. Oxygen is 89%. He's sitting still, not playing, just focused on breathing.",
+                "He looks very ill. He's only able to say one word at a time. His lips look pale. He has had croup before but never this bad. I'm calling 911."
+            ]
+        }
+    ]
+}
+
+
+def test_scenarios():
+    settings = Settings.from_env()
+    results = []
+
+    for condition, scenarios in SCENARIOS.items():
+        for scenario in scenarios:
+            case = default_case()
+
+            # Process each turn
+            for turn_idx, turn_text in enumerate(scenario["turns"], 1):
+                case = interpret_user_message(settings, case, turn_text)
+
+            # Get final triage decision
+            missing = required_missing(case)
+            decision = evaluate_triage(case, missing)
+
+            actual = decision.get("disposition")
+            expected = scenario["expected"]
+            status = "✓ PASS" if actual == expected else "✗ FAIL"
+
+            results.append({
+                "condition": condition,
+                "scenario": scenario["id"],
+                "expected": expected,
+                "actual": actual,
+                "status": status,
+                "case": case
+            })
+
+            print(f"{status} | {condition:15} | {scenario['id']:20} | Expected: {expected:20} | Got: {actual}")
+
+    # Summary
+    passed = sum(1 for r in results if "PASS" in r["status"])
+    total = len(results)
+    print(f"\n{'='*80}")
+    print(f"SUMMARY: {passed}/{total} scenarios passed")
+    print(f"{'='*80}\n")
+
+    # Show failures with details
+    failures = [r for r in results if "FAIL" in r["status"]]
+    if failures:
+        print("FAILURES - Cases where disposition is wrong:\n")
+        for fail in failures:
+            print(f"\n{fail['condition']} - {fail['scenario']}")
+            print(f"  Expected: {fail['expected']}")
+            print(f"  Got: {fail['actual']}")
+            print(f"  Chief complaint: {fail['case'].get('chief_complaint', 'unknown')}")
+            print(f"  Key fields: breathing={fail['case'].get('breathing')}, "
+                  f"oxygen_saturation={fail['case'].get('oxygen_saturation')}, "
+                  f"retractions={fail['case'].get('retractions')}, "
+                  f"ability_to_speak={fail['case'].get('ability_to_speak')}")
+
+    return results
+
+
+if __name__ == "__main__":
+    test_scenarios()
