@@ -575,15 +575,8 @@ def main() -> None:
         st.markdown(conditions_html, unsafe_allow_html=True)
 
         st.divider()
-        st.markdown("""
-        <div style="background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; padding: 10px; font-size: 0.75rem; color: #8A99AD;">
-            <strong>Neurosymbolic Graph-RAG</strong> clinical decision helper.<br><br>
-            Grounds symptoms into pediatric clinical pathways with SNOMED-CT knowledge graph.
-        </div>
-        """, unsafe_allow_html=True)
-
         disclaimer_html = (
-            '<div style="background-color: #E11D48; border: 1.5px solid #FFFFFF; border-radius: 8px; padding: 12px; margin-top: 1rem; color: #FFFFFF; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">'
+            '<div style="background-color: #E11D48; border: 1.5px solid #FFFFFF; border-radius: 8px; padding: 12px; color: #FFFFFF; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">'
             '<div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: #FFFFFF;">'
             '⚠️ CLINICAL DISCLAIMER'
             '</div>'
@@ -593,6 +586,13 @@ def main() -> None:
             '</div>'
         )
         st.markdown(re.sub(r'\s+', ' ', disclaimer_html).strip(), unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style="background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; padding: 10px; font-size: 0.75rem; color: #8A99AD; margin-top: 1rem;">
+            <strong>Neurosymbolic Graph-RAG</strong> clinical decision helper.<br><br>
+            Grounds symptoms into pediatric clinical pathways with SNOMED-CT knowledge graph.
+        </div>
+        """, unsafe_allow_html=True)
 
     # Active Session Tracking
     active_state = _latest_turn_state()
