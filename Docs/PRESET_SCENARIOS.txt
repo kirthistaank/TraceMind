@@ -1,0 +1,414 @@
+================================================================================
+                     TRACEMIND PRESET SCENARIOS
+                   Clinical Triage Test Cases (12 Scenarios)
+================================================================================
+
+This document contains all 12 preset clinical scenarios organized by condition.
+Each scenario includes multi-turn conversation examples that demonstrate different
+severity levels (Home Management, Urgent Same-Day, ER Now) across 4 conditions.
+
+USAGE OPTIONS:
+1. INDIVIDUAL TURNS: Submit each turn separately for multi-turn reasoning
+2. COMBINED SCENARIO: Submit all turns as a single message for quick testing
+
+KEY ABBREVIATIONS:
+- CPG: Clinical Practice Guideline
+- SpO2: Oxygen Saturation
+- RR: Respiratory Rate
+- ER: Emergency Room / Emergency Department
+
+================================================================================
+FEVER (3 Scenarios)
+================================================================================
+
+---
+SCENARIO 1: 3-year-old with mild fever (Home Care)
+Disposition: HOME_MANAGEMENT
+Description: Mild fever, normal vitals, alert and playful — safe for home management.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 3-year-old has a fever and mild cough
+
+Turn 2:
+Temp is 100.8, eating normally, drinking okay, breathing normally
+
+Turn 3:
+He's playful and answering me, peed a couple hours ago
+
+COMBINED SCENARIO:
+My 3-year-old has a fever and mild cough Temp is 100.8, eating normally, drinking okay, breathing normally He's playful and answering me, peed a couple hours ago
+
+Expected Rules Fired:
+Conservative home management
+
+---
+
+---
+SCENARIO 2: 5-year-old with repeated vomiting (Urgent)
+Disposition: URGENT_SAME_DAY
+Description: Persistent vomiting, low fluid intake — needs same-day care.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+5 year old fever and vomiting
+
+Turn 2:
+He vomited 4 times in the last 2 hours and only sips
+
+Turn 3:
+102.5 fever, breathing fine, answers questions, he keeps throwing up and won't drink much, he peed an hour ago
+
+COMBINED SCENARIO:
+5 year old fever and vomiting He vomited 4 times in the last 2 hours and only sips 102.5 fever, breathing fine, answers questions, he keeps throwing up and won't drink much, he peed an hour ago
+
+Expected Rules Fired:
+Repeated vomiting with poor fluid intake
+
+---
+
+---
+SCENARIO 3: 6-year-old with lethargy (ER Now)
+Disposition: ER_NOW
+Description: Lethargy, dehydration risk — go to ER immediately.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 6-year-old has a fever, threw up, and looks really wiped out. I'm worried.
+
+Turn 2:
+Temp is 103.5. He's barely responding, just lying there. He doesn't want to drink. No trouble breathing. Also, there's been a stomach virus going around his school this week.
+
+Turn 3:
+I don't think he's peed since this afternoon.
+
+COMBINED SCENARIO:
+My 6-year-old has a fever, threw up, and looks really wiped out. I'm worried. Temp is 103.5. He's barely responding, just lying there. He doesn't want to drink. No trouble breathing. Also, there's been a stomach virus going around his school this week. I don't think he's peed since this afternoon.
+
+Expected Rules Fired:
+Severe dehydration, Altered alertness
+
+---
+
+================================================================================
+ASTHMA (3 Scenarios)
+================================================================================
+
+---
+SCENARIO 4: 4-year-old with mild asthma (Home Care)
+Disposition: HOME_MANAGEMENT
+Description: Mild wheeze, speaking in full sentences, normal oxygen — manageable at home.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 4-year-old has some wheezing
+
+Turn 2:
+He's speaking in full sentences, playing, no major distress
+
+Turn 3:
+O2 sat is 97%, normal energy, no retractions
+
+COMBINED SCENARIO:
+My 4-year-old has some wheezing He's speaking in full sentences, playing, no major distress O2 sat is 97%, normal energy, no retractions
+
+Expected Rules Fired:
+Mild asthma exacerbation, Mild wheeze without distress
+
+---
+
+---
+SCENARIO 5: 7-year-old with moderate asthma (Urgent)
+Disposition: URGENT_SAME_DAY
+Description: Moderate distress, short phrase speech, chest retractions — urgent care needed.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 7-year-old is having trouble breathing, some wheezing
+
+Turn 2:
+He's only able to say short phrases, has some chest retractions
+
+Turn 3:
+O2 sat is 92%, you can see his ribs pulling in when he breathes
+
+COMBINED SCENARIO:
+My 7-year-old is having trouble breathing, some wheezing He's only able to say short phrases, has some chest retractions O2 sat is 92%, you can see his ribs pulling in when he breathes
+
+Expected Rules Fired:
+Moderate asthma exacerbation, Moderate retractions with asthma
+
+---
+
+---
+SCENARIO 6: 5-year-old with severe asthma (ER Now)
+Disposition: ER_NOW
+Description: Severe respiratory distress, single words only, low oxygen — CALL 911.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 5-year-old is having severe breathing problems
+
+Turn 2:
+He can barely speak, just single words, severe retractions visible
+
+Turn 3:
+O2 sat is 85%, he's in severe distress
+
+COMBINED SCENARIO:
+My 5-year-old is having severe breathing problems He can barely speak, just single words, severe retractions visible O2 sat is 85%, he's in severe distress
+
+Expected Rules Fired:
+Severe asthma exacerbation
+
+---
+
+================================================================================
+ANAPHYLAXIS / ALLERGIC REACTION (3 Scenarios)
+================================================================================
+
+---
+SCENARIO 7: 3-year-old with mild hives (Home Care)
+Disposition: HOME_MANAGEMENT
+Description: Localized hives only, normal breathing, alert — monitor at home.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 3-year-old just ate peanuts for the first time and now has some itchy spots on his face and neck.
+
+Turn 2:
+He's alert and happy. Breathing is normal. No swelling. Just little red bumps where he scratched. Temperature is normal.
+
+Turn 3:
+No difficulty swallowing. He's still playful. The hives are getting less itchy already. No known peanut allergy history.
+
+COMBINED SCENARIO:
+My 3-year-old just ate peanuts for the first time and now has some itchy spots on his face and neck. He's alert and happy. Breathing is normal. No swelling. Just little red bumps where he scratched. Temperature is normal. No difficulty swallowing. He's still playful. The hives are getting less itchy already. No known peanut allergy history.
+
+Expected Rules Fired:
+Mild localized allergic reaction
+
+---
+
+---
+SCENARIO 8: 6-year-old with angioedema (Urgent)
+Disposition: URGENT_SAME_DAY
+Description: Face/lip swelling, hives, thick tongue feeling — urgent evaluation needed.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 6-year-old had shellfish at dinner and now her lips are swelling up and she's getting hives all over.
+
+Turn 2:
+She says her tongue feels thick. She's alert and breathing OK but I can see swelling around her mouth and on her face. No stridor yet. She's breathing normally.
+
+Turn 3:
+She's never had a shellfish allergy before. Temperature is normal. No wheezing. She's getting more hives on her chest.
+
+COMBINED SCENARIO:
+My 6-year-old had shellfish at dinner and now her lips are swelling up and she's getting hives all over. She says her tongue feels thick. She's alert and breathing OK but I can see swelling around her mouth and on her face. No stridor yet. She's breathing normally. She's never had a shellfish allergy before. Temperature is normal. No wheezing. She's getting more hives on her chest.
+
+Expected Rules Fired:
+Significant allergic reaction
+
+---
+
+---
+SCENARIO 9: 4-year-old with anaphylaxis (ER Now)
+Disposition: ER_NOW
+Description: Wheezing, stridor, facial swelling, 92% SpO2, dizziness — CALL 911.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 4-year-old just ate a bug and now he's having trouble breathing. He's wheezing and his face is really swollen.
+
+Turn 2:
+He has hives all over his body. He says he feels dizzy. Oxygen is 92%. He's wheezing and has some stridor. His lips and tongue are very swollen. He's alert but seems confused.
+
+Turn 3:
+He's breathing hard and doesn't look right. No known bee allergy. This is happening really fast.
+
+COMBINED SCENARIO:
+My 4-year-old just ate a bug and now he's having trouble breathing. He's wheezing and his face is really swollen. He has hives all over his body. He says he feels dizzy. Oxygen is 92%. He's wheezing and has some stridor. His lips and tongue are very swollen. He's alert but seems confused. He's breathing hard and doesn't look right. No known bee allergy. This is happening really fast.
+
+Expected Rules Fired:
+Anaphylaxis - multi-system involvement, Anaphylaxis with airway involvement
+
+---
+
+================================================================================
+CROUP (3 Scenarios)
+================================================================================
+
+---
+SCENARIO 10: 2-year-old with mild croup (Home Care)
+Disposition: HOME_MANAGEMENT
+Description: Barky cough, mild stridor with crying only, normal oxygen — manage at home.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 2-year-old has a barky cough that sounds like a seal. He's been sick for 2 days.
+
+Turn 2:
+No fever or very low-grade. He has a barky cough and some mild stridor when he cries. He's playing between cough fits. Breathing is normal at rest with no retractions.
+
+Turn 3:
+Oxygen is 96%. He's happy and alert. Eating and drinking normally. The cough is worse at night but he seems fine during the day.
+
+COMBINED SCENARIO:
+My 2-year-old has a barky cough that sounds like a seal. He's been sick for 2 days. No fever or very low-grade. He has a barky cough and some mild stridor when he cries. He's playing between cough fits. Breathing is normal at rest with no retractions. Oxygen is 96%. He's happy and alert. Eating and drinking normally. The cough is worse at night but he seems fine during the day.
+
+Expected Rules Fired:
+Mild croup, Barky cough without stridor
+
+---
+
+---
+SCENARIO 11: 18-month-old with moderate croup (Urgent)
+Disposition: URGENT_SAME_DAY
+Description: Stridor at rest, chest retractions, 94% SpO2 — urgent care needed.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 18-month-old has had a barky cough for 2 days and now has a different sounding breathing.
+
+Turn 2:
+Low-grade fever. He has stridor even at rest now. I can see his chest pulling in when he breathes. He seems tired and fussy. Oxygen is 94%.
+
+Turn 3:
+He's still alert but quieter than usual. He's not eating much. The stridor is getting worse. He has croup and his sibling has it too.
+
+COMBINED SCENARIO:
+My 18-month-old has had a barky cough for 2 days and now has a different sounding breathing. Low-grade fever. He has stridor even at rest now. I can see his chest pulling in when he breathes. He seems tired and fussy. Oxygen is 94%. He's still alert but quieter than usual. He's not eating much. The stridor is getting worse. He has croup and his sibling has it too.
+
+Expected Rules Fired:
+Moderate croup, Croup with moderate retractions
+
+---
+
+---
+SCENARIO 12: 3-year-old with severe croup (ER Now)
+Disposition: ER_NOW
+Description: Severe stridor at rest, severe retractions, 89% SpO2, pale lips — CALL 911.
+---
+
+INDIVIDUAL TURNS:
+
+Turn 1:
+My 3-year-old woke up with terrible barky cough and can barely breathe. He's very distressed and I'm really scared.
+
+Turn 2:
+No high fever. But he has loud stridor even at rest. His chest and neck are pulling in with every breath. Oxygen is 89%. He's sitting still, not playing, just focused on breathing.
+
+Turn 3:
+He looks very ill. He's only able to say one word at a time. His lips look pale. He has had croup before but never this bad. I'm calling 911.
+
+COMBINED SCENARIO:
+My 3-year-old woke up with terrible barky cough and can barely breathe. He's very distressed and I'm really scared. No high fever. But he has loud stridor even at rest. His chest and neck are pulling in with every breath. Oxygen is 89%. He's sitting still, not playing, just focused on breathing. He looks very ill. He's only able to say one word at a time. His lips look pale. He has had croup before but never this bad. I'm calling 911.
+
+Expected Rules Fired:
+Severe croup, Croup with hypoxia, Croup with respiratory distress
+
+---
+
+================================================================================
+CLINICAL DECISION SUMMARY
+================================================================================
+
+HOME MANAGEMENT (4 scenarios):
+1. Fever: 3-year-old with mild fever
+2. Asthma: 4-year-old with mild asthma
+3. Anaphylaxis: 3-year-old with mild hives
+4. Croup: 2-year-old with mild croup
+
+URGENT SAME-DAY (4 scenarios):
+1. Fever: 5-year-old with repeated vomiting
+2. Asthma: 7-year-old with moderate asthma
+3. Anaphylaxis: 6-year-old with angioedema
+4. Croup: 18-month-old with moderate croup
+
+ER NOW (4 scenarios):
+1. Fever: 6-year-old with lethargy and no urine
+2. Asthma: 5-year-old with severe asthma and low oxygen
+3. Anaphylaxis: 4-year-old with multi-system anaphylaxis
+4. Croup: 3-year-old with severe croup and stridor at rest
+
+================================================================================
+USAGE INSTRUCTIONS
+================================================================================
+
+OPTION 1: INDIVIDUAL TURNS (Recommended for testing multi-turn reasoning)
+- Submit each "Turn" message separately to the system
+- Allows the system to accumulate information progressively across interactions
+- Better demonstrates reasoning across multiple interactions
+- More realistic simulation of actual parent-clinician conversation
+
+OPTION 2: COMBINED SCENARIO (Quick testing & batch evaluation)
+- Copy the "COMBINED SCENARIO" text and submit as a single message
+- Tests extraction accuracy with complex, multi-symptom inputs
+- Faster for batch testing and automation
+- Useful for verifying extraction consistency
+
+BOTH APPROACHES SHOULD YIELD THE SAME DISPOSITION:
+✅ HOME_MANAGEMENT
+✅ URGENT_SAME_DAY
+✅ ER_NOW
+
+If dispositions differ between approaches, it indicates a multi-turn accumulation or
+extraction consistency issue that should be investigated.
+
+================================================================================
+CLINICAL NOTES
+================================================================================
+
+These scenarios are based on standard pediatric clinical practice guidelines:
+- NIH NAEPP for Asthma
+- AAP/AAAAI for Anaphylaxis
+- AAP for Croup and Fever Management
+- Seattle Children's Hospital CPG for Pediatric Fever
+
+Use these scenarios to:
+✓ Train users on the system
+✓ Validate triage logic across conditions
+✓ Test edge cases and severity thresholds
+✓ Demonstrate clinical decision-making patterns
+✓ Verify rule firing and disposition accuracy
+✓ Compare individual-turn vs combined-input consistency
+
+TESTING CHECKLIST:
+□ All 12 scenarios return correct disposition
+□ Rules fired match expected rules
+□ Individual turns and combined scenarios produce same results
+□ Multi-turn field accumulation works correctly
+□ Extraction is accurate across all clinical parameters
+□ No false positives or negatives in rule firing
+
+DISCLAIMER:
+TraceMind is an automated triage tool for training and educational purposes.
+Always seek direct clinical evaluation for pediatric emergencies.
+
+================================================================================
+END OF DOCUMENT
+================================================================================
