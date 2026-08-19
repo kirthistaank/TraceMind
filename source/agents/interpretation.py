@@ -332,7 +332,9 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
     elif _fuzzy_match_keyword(t, ["breathing normally", "breathing fine", "normal breathing"], threshold=0.8):
         out["breathing"] = "normal"
 
-    if any(
+    if "only sips" in t or ("sip" in t and "only" in t):
+        out["fluid_intake"] = "poor"
+    elif any(
         x in t
         for x in (
             "not drinking",
@@ -353,8 +355,6 @@ def _heuristic_extract(text: str) -> dict[str, Any]:
             "wont take fluids",
         )
     ) or re.search(r"\brefuse[sd]?\s+(all\s+)?fluids?\b", t):
-        out["fluid_intake"] = "poor" if "sip" not in t else "some"
-    elif "only sips" in t or ("sip" in t and "only" in t):
         out["fluid_intake"] = "poor"
     elif (
         "sipping" in t

@@ -90,6 +90,149 @@ _RULE_META: dict[str, tuple[str, str, str]] = {
         "AND fluid_intake != none AND NOT er_now AND NOT urgent_same_day",
         "CPG: alert, breathing normally, taking some fluids — no red flags met",
     ),
+    # Asthma CPG rules
+    "R_ASTHMA_MILD_HOME": (
+        "Mild asthma exacerbation",
+        "wheeze present with normal oxygen and full speech ability",
+        "NIH NAEPP CPG: minimal distress, normal O2, full sentences → home management",
+    ),
+    "R_ASTHMA_MILD_WHEEZE_HOME": (
+        "Mild wheeze without distress",
+        "wheeze == yes AND minimal distress",
+        "CPG: isolated wheeze without respiratory distress → home management",
+    ),
+    "R_ASTHMA_MODERATE_URGENT": (
+        "Moderate asthma exacerbation",
+        "moderate symptoms with work of breathing",
+        "NIH NAEPP CPG: moderate retractions or short phrases → urgent same-day",
+    ),
+    "R_ASTHMA_RETRACTIONS_URGENT": (
+        "Moderate retractions with asthma",
+        "retractions in (mild, moderate)",
+        "CPG: moderate retractions indicate moderate exacerbation → urgent care",
+    ),
+    "R_ASTHMA_SEVERE_ER": (
+        "Severe asthma exacerbation",
+        "severe distress, hypoxia, or altered mental status",
+        "NIH NAEPP CPG: severe exacerbation with single words or low SpO2 → ER now",
+    ),
+    "R_ASTHMA_HYPOXIA_ER": (
+        "Asthma with hypoxia",
+        "oxygen_saturation < 90%",
+        "CPG: SpO2 < 90% in asthma → ER immediately",
+    ),
+    "R_ASTHMA_SPEECH_IMPAIRMENT_ER": (
+        "Asthma with speech impairment",
+        "ability_to_speak in (single_words, no_speech)",
+        "CPG: inability to speak full sentences → severe exacerbation → ER",
+    ),
+    "R_ASTHMA_ALTERED_MENTAL_ER": (
+        "Asthma with altered mental status",
+        "altered_mental_status == yes",
+        "CPG: altered mental status in asthma → severe → ER immediately",
+    ),
+    # Anaphylaxis CPG rules
+    "R_ANAPHYLAXIS_ER": (
+        "Anaphylaxis - multi-system involvement",
+        "multi-system involvement detected",
+        "AAP/AAAAI: anaphylaxis (skin + airway/GI/CV) → CALL 911",
+    ),
+    "R_ANAPHYLAXIS_AIRWAY_ER": (
+        "Anaphylaxis with airway involvement",
+        "breathing == distress OR wheeze == yes OR stridor == yes",
+        "CPG: airway involvement in anaphylaxis → ER immediately",
+    ),
+    "R_ANAPHYLAXIS_CARDIOVASCULAR_ER": (
+        "Anaphylaxis with cardiovascular collapse",
+        "hypotension == yes OR syncope_or_presyncope == yes",
+        "CPG: hypotension/syncope in anaphylaxis → ER immediately",
+    ),
+    "R_ANAPHYLAXIS_ANGIOEDEMA_AIRWAY_ER": (
+        "Anaphylaxis with airway angioedema",
+        "angioedema == airway",
+        "CPG: airway angioedema → severe anaphylaxis → ER immediately",
+    ),
+    "R_ANAPHYLAXIS_ALTERED_MENTAL_ER": (
+        "Anaphylaxis with altered mental status",
+        "alertness == altered",
+        "CPG: altered mental status in anaphylaxis → ER immediately",
+    ),
+    "R_ALLERGIC_REACTION_URGENT": (
+        "Significant allergic reaction",
+        "localized angioedema or widespread urticaria",
+        "AAP: significant reaction without anaphylaxis → same-day urgent care",
+    ),
+    "R_ALLERGIC_ANGIOEDEMA_FACE_URGENT": (
+        "Facial/lip angioedema",
+        "angioedema in (face, lips)",
+        "CPG: localized facial swelling → urgent evaluation needed",
+    ),
+    "R_ALLERGIC_GI_SYMPTOMS_URGENT": (
+        "Allergic reaction with GI symptoms",
+        "gi_symptoms in (vomiting, abdominal_pain, diarrhea)",
+        "CPG: allergic reaction with GI involvement → urgent care",
+    ),
+    "R_ALLERGIC_MILD_HOME": (
+        "Mild localized allergic reaction",
+        "isolated urticaria/itching only",
+        "CPG: mild isolated rash without systemic involvement → home management",
+    ),
+    # Croup CPG rules
+    "R_CROUP_MILD_HOME": (
+        "Mild croup",
+        "barky cough with mild stridor (crying only)",
+        "AAP: mild croup with good air entry and normal O2 → home management",
+    ),
+    "R_CROUP_BARKY_COUGH_HOME": (
+        "Barky cough without stridor",
+        "barky_cough == yes AND no significant stridor",
+        "CPG: seal-like cough alone → mild croup → home care",
+    ),
+    "R_CROUP_INSPIRATORY_STRIDOR_HOME": (
+        "Inspiratory stridor only",
+        "stridor_type == inspiratory",
+        "CPG: inspiratory stridor (not biphasic) → mild croup → home management",
+    ),
+    "R_CROUP_MODERATE_URGENT": (
+        "Moderate croup",
+        "stridor at rest or moderate retractions",
+        "AAP: moderate croup with stridor at rest → dexamethasone + urgent care",
+    ),
+    "R_CROUP_RETRACTIONS_URGENT": (
+        "Croup with moderate retractions",
+        "retractions in (mild, moderate)",
+        "CPG: retractions indicate moderate severity → urgent evaluation needed",
+    ),
+    "R_CROUP_TACHYPNEA_URGENT": (
+        "Croup with tachypnea concern",
+        "breathing == tachypnea_concern",
+        "CPG: elevated respiratory rate in croup → urgent same-day care",
+    ),
+    "R_CROUP_SEVERE_ER": (
+        "Severe croup",
+        "severe stridor at rest + significant distress",
+        "AAP: severe croup (Westley score ≥ 6) → ER immediately",
+    ),
+    "R_CROUP_BIPHASIC_STRIDOR_ER": (
+        "Croup with biphasic/expiratory stridor",
+        "stridor_type in (biphasic, expiratory)",
+        "CPG: biphasic stridor (lower airway) → ER immediately",
+    ),
+    "R_CROUP_HYPOXIA_ER": (
+        "Croup with hypoxia",
+        "oxygen_saturation < 92%",
+        "CPG: SpO2 < 92% in croup → ER immediately",
+    ),
+    "R_CROUP_SEVERE_RETRACTIONS_ER": (
+        "Croup with severe retractions",
+        "retractions == severe",
+        "CPG: severe retractions → severe croup → ER immediately",
+    ),
+    "R_CROUP_RESPIRATORY_DISTRESS_ER": (
+        "Croup with respiratory distress",
+        "breathing == distress",
+        "CPG: respiratory distress in croup → severe → ER immediately",
+    ),
 }
 
 

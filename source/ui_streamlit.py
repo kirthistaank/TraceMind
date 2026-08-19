@@ -843,30 +843,31 @@ def main() -> None:
             if active_state:
                 rule_ids = decision.get("rule_ids") or []
                 if rule_ids:
+                    cls_map = {
+                        "HOME_MANAGEMENT": "active-rule-home",
+                        "URGENT_SAME_DAY": "active-rule-urgent",
+                        "ER_NOW": "active-rule-er"
+                    }
+                    cls = cls_map.get(disposition, "")
+
+                    # Collect labels for all rules
+                    labels = []
                     for rule in rule_ids:
                         meta = _RULE_META.get(rule)
-                        cls_map = {
-                            "HOME_MANAGEMENT": "active-rule-home",
-                            "URGENT_SAME_DAY": "active-rule-urgent",
-                            "ER_NOW": "active-rule-er"
-                        }
-                        cls = cls_map.get(disposition, "")
-                        
                         if meta:
-                            label, condition, cpg_basis = meta
-                            st.markdown(f"""
-                            <div class="logic-trace-card {cls}">
-                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: {active_disp_meta[0]}; font-weight:600;">{rule} &mdash; {label}</div>
-                                <div style="font-size: 0.8rem; color: #E2E8F0; margin-top: 6px;">{condition}</div>
-                                <div style="font-size: 0.7rem; color: #56667A; margin-top: 6px; font-style: italic;">CPG Base: {cpg_basis}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            label, _, _ = meta
+                            labels.append(label)
                         else:
-                            st.markdown(f"""
-                            <div class="logic-trace-card {cls}">
-                                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #0EAF9F;">{rule}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            labels.append(rule)
+
+                    # Display as comma-separated list
+                    rules_text = ", ".join(labels)
+                    st.markdown(f"""
+                    <div class="logic-trace-card {cls}">
+                        <div style="font-size: 0.75rem; color: #94A3B8; font-weight: 500; margin-bottom: 8px;">Rules Fired:</div>
+                        <div style="font-size: 0.9rem; color: {active_disp_meta[0]}; font-weight: 500; line-height: 1.5;">{rules_text}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
                     st.info("No active symbolic clinical rules fired for this turn.")
             else:
