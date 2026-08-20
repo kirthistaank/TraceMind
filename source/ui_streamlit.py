@@ -221,7 +221,7 @@ def _apply_custom_css() -> None:
 @st.dialog("📋 Preset Clinical Scenarios", width="large")
 def _show_sample_modal() -> None:
     """Display modal with all scenarios organized by condition with copy buttons."""
-    st.markdown("## All Scenarios by Condition")
+    st.markdown('<h2 style="color: #000000;">All Scenarios by Condition</h2>', unsafe_allow_html=True)
 
     st.markdown("""
     <div style="background-color: #12181F; border: 1px solid #0EAF9F; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 0.8rem; color: #E2E8F0;">
@@ -626,10 +626,11 @@ def _latest_turn_state() -> CareTraceState | None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="TraceMind - Pediatric Triage Console", page_icon="🩺", layout="wide")
+    st.set_page_config(page_title="TraceMind - Pediatric Triage Console", page_icon="🩺", layout="wide", initial_sidebar_state="expanded")
 
     # Inject modern separated dark-theme stylesheet
     _apply_custom_css()
+
 
     # Session Initialization
     if "ct_state" not in st.session_state:
@@ -637,7 +638,7 @@ def main() -> None:
     if "ct_chat" not in st.session_state:
         st.session_state.ct_chat = []
     if "show_sample_modal" not in st.session_state:
-        st.session_state.show_sample_modal = None
+        st.session_state.show_sample_modal = False
 
     with st.sidebar:
         logo_html = _get_logo_html()
@@ -651,8 +652,8 @@ def main() -> None:
             '</div>'
         )
         st.markdown(re.sub(r'\s+', ' ', sidebar_brand_html).strip(), unsafe_allow_html=True)
-        
-        st.divider()
+
+        st.markdown('<hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #1A212A;"/>', unsafe_allow_html=True)
         st.markdown('<div class="scenario-section-header">✅ Supported Conditions</div>', unsafe_allow_html=True)
 
         conditions_html = """
@@ -677,17 +678,18 @@ def main() -> None:
         """
         st.markdown(conditions_html, unsafe_allow_html=True)
 
-        st.divider()
+        st.markdown('<hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #1A212A;"/>', unsafe_allow_html=True)
+        st.markdown('<div style="height: 0.5rem;"></div>', unsafe_allow_html=True)
         if st.button("📋 Preset Scenarios (All Conditions)", width='stretch', help="Browse and copy preset clinical scenarios"):
             st.session_state.show_sample_modal = True
             st.rerun()
 
-        st.divider()
+        st.markdown('<hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #1A212A;"/>', unsafe_allow_html=True)
         if st.button("🔄 Reset Live Triage Session", width='stretch'):
             _reset()
             st.rerun()
 
-        st.divider()
+        st.markdown('<hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #1A212A;"/>', unsafe_allow_html=True)
         disclaimer_html = (
             '<div style="background-color: #E11D48; border: 1.5px solid #FFFFFF; border-radius: 8px; padding: 12px; color: #FFFFFF; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">'
             '<div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: #FFFFFF;">'
@@ -699,13 +701,6 @@ def main() -> None:
             '</div>'
         )
         st.markdown(re.sub(r'\s+', ' ', disclaimer_html).strip(), unsafe_allow_html=True)
-
-        st.markdown("""
-        <div style="background-color: #12181F; border: 1px solid #1C2430; border-radius: 8px; padding: 10px; font-size: 0.75rem; color: #8A99AD; margin-top: 1rem;">
-            <strong>Neurosymbolic Graph-RAG</strong> clinical decision helper.<br><br>
-            Grounds symptoms into pediatric clinical pathways with SNOMED-CT knowledge graph.
-        </div>
-        """, unsafe_allow_html=True)
 
     # Active Session Tracking
     active_state = _latest_turn_state()
@@ -730,8 +725,10 @@ def main() -> None:
         )
         st.markdown(header_html, unsafe_allow_html=True)
 
-        if st.session_state.show_sample_modal:
+        if st.session_state.show_sample_modal and not st.session_state.ct_chat:
             _show_sample_modal()
+        elif st.session_state.show_sample_modal and st.session_state.ct_chat:
+            st.session_state.show_sample_modal = False
 
         # Independent Scroll Container: Restricts height and creates customized low-profile scroll bars
         chat_scroll_container = st.container(height=580, border=False)
@@ -784,7 +781,7 @@ def main() -> None:
 
         if user_text:
             st.session_state.show_sample_modal = False
-            
+
             state: CareTraceState = st.session_state.ct_state
             state["raw_user_text"] = user_text
             msgs = list(state.get("messages") or [])
@@ -808,7 +805,32 @@ def main() -> None:
 
     with right_panel:
         st.markdown('<div class="sticky-panel">', unsafe_allow_html=True)
-        
+
+        # Help Popover at top of right panel
+        with st.popover("ℹ️ About TraceMind", use_container_width=False):
+            st.markdown("""<div style="color: #FF5252;">
+
+### 🩺 About TraceMind
+
+**Evidence-Based Pediatric Clinical Triage**
+
+Neurosymbolic AI combining clinical guidelines with symbolic reasoning.
+
+**4 Supported Conditions:**
+- 🌡️ Fever (NIH/Seattle Children's)
+- 🫁 Asthma (NIH NAEPP)
+- 🔴 Anaphylaxis (AAP/AAAAI)
+- 🛑 Croup (AAP CPG)
+
+**Design Principles:**
+- Explainable rules with audit trails
+- Safety-critical guardrails
+- Multi-turn symptom assessment
+- Evidence-based CPG triage
+
+Begin with child details or use preset scenarios.
+</div>""", unsafe_allow_html=True)
+
         st.markdown('<div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #56667A; font-weight: 700; margin-bottom: 0.25rem;">CURRENT DISPOSITION</div>', unsafe_allow_html=True)
         
         disp_colors = {
@@ -933,6 +955,18 @@ html, body, [data-testid="stAppViewContainer"] {
     border-right: 1px solid #1A212A !important;
 }
 
+/* Hide sidebar collapse/expand buttons entirely */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarNavCollapseButton"],
+button[aria-label="Close sidebar"],
+button[aria-label="Open sidebar"],
+button[aria-label="close sidebar"],
+button[aria-label="open sidebar"] {
+    display: none !important;
+}
+
 .block-container {
     padding-top: 1.5rem !important;
     padding-bottom: 2rem !important;
@@ -1004,9 +1038,47 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #56667A;
-    margin-bottom: 0.35rem;
-    margin-top: 0.2rem;
+    margin-bottom: 0.15rem;
+    margin-top: 0.15rem;
     font-weight: 700;
+}
+
+/* Dialog title — black always, including hover */
+[data-testid="stDialog"] h1,
+[data-testid="stDialog"] h2,
+[data-testid="stDialogTitle"],
+[data-testid="stDialogTitle"]:hover,
+[data-testid="stDialog"] h1:hover,
+[data-testid="stDialog"] h2:hover,
+[role="dialog"] h1,
+[role="dialog"] h2,
+[role="dialog"] h1:hover,
+[role="dialog"] h2:hover {
+    color: #000000 !important;
+}
+
+/* Force black text inside popover content panel */
+[data-testid="stPopoverBody"],
+[data-testid="stPopoverBody"] *,
+[data-baseweb="popover"] *,
+[data-baseweb="popover"] {
+    color: #000000 !important;
+}
+
+/* About TraceMind button text - black */
+[data-testid="stPopover"] button,
+[data-testid="stPopover"] button p,
+[data-testid="stPopover"] button span,
+[data-testid="stPopover"] button div {
+    color: #000000 !important;
+}
+
+/* About TraceMind button text on hover - white */
+[data-testid="stPopover"] button:hover,
+[data-testid="stPopover"] button:hover p,
+[data-testid="stPopover"] button:hover span,
+[data-testid="stPopover"] button:hover div {
+    color: #FFFFFF !important;
 }
 
 /* Custom Sticky Right Column Layout */
@@ -1033,7 +1105,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Custom premium grey-slate buttons in sidebar with blue-glow border highlights */
-[data-testid="stSidebar"] div.stButton > button {
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] [data-testid="stPopover"] > button {
     background-color: #111823 !important;
     color: #E2E8F0 !important;
     border: 1px solid #1E2D4A !important;
@@ -1048,12 +1121,19 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
-[data-testid="stSidebar"] div.stButton > button:hover {
-    background-color: #172237 !important;
+[data-testid="stSidebar"] div.stButton > button:hover,
+[data-testid="stSidebar"] [data-testid="stPopover"] > button:hover {
+    background-color: rgba(14, 175, 159, 0.2) !important;
     color: #FFFFFF !important;
     border-color: #0EAF9F !important;
     transform: translateY(-1px);
-    box-shadow: 0 0 12px rgba(14, 175, 159, 0.25) !important;
+    box-shadow: 0 0 16px rgba(14, 175, 159, 0.4) !important;
+}
+
+[data-testid="stSidebar"] div.stButton > button:hover p,
+[data-testid="stSidebar"] div.stButton > button:hover span,
+[data-testid="stSidebar"] div.stButton > button:hover div {
+    color: #FFFFFF !important;
 }
 
 /* Standard structural widgets fallback values */
@@ -1064,6 +1144,7 @@ div.stButton > button {
     border-radius: 10px;
     padding: 0.5rem 1rem;
 }
+
 
 .custom-card-container {
     background-color: #12181F;
@@ -1104,7 +1185,7 @@ div.stButton > button {
 /* Chat bubble styling */
 .chat-bubble-user {
     background-color: #18222E;
-    color: #E2E8F0;
+    color: #FFFFFF;
     border: 1px solid #233144;
     border-radius: 16px 16px 0px 16px;
     padding: 1rem 1.25rem;
